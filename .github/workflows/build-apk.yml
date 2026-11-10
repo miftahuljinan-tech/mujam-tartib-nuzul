@@ -17,6 +17,26 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Unduh font (SIL OFL) ke assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          d=app/src/main/assets/fonts
+          mkdir -p "$d"
+          fetch() {
+            dir="$1"; out="$2"; pat="$3"
+            list=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/google/fonts/contents/ofl/$dir")
+            url=$(echo "$list" | jq -r --arg p "$pat" '.[] | select(.name|test($p)) | .download_url' | head -1)
+            test -n "$url" || { echo "Font tidak ditemukan: $dir $pat"; echo "$list" | jq -r '.[].name'; exit 1; }
+            curl -fsSL "$url" -o "$d/$out"
+            lic=$(echo "$list" | jq -r '.[] | select(.name=="OFL.txt") | .download_url')
+            curl -fsSL "$lic" -o "$d/OFL-$dir.txt"
+            ls -l "$d/$out"
+          }
+          fetch amiriquran AmiriQuran-Regular.ttf '^AmiriQuran-Regular\.ttf$'
+          fetch reemkufi ReemKufi.ttf '\.ttf$'
+          fetch montserrat Montserrat.ttf '^Montserrat\[wght\]\.ttf$'
       - name: Build debug APK
         run: gradle assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4

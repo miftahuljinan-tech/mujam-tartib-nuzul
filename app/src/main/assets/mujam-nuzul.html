@@ -7,12 +7,15 @@
 <style>
 :root{--bg:#faf7f0;--card:#fff;--ink:#222;--mut:#6b6b6b;--line:#e3dccb;--acc:#1f6f5c;--acc2:#e8f3ef;--mark:#ffe28a;--bar:#1f6f5c}
 @media (prefers-color-scheme:dark){:root{--bg:#16181a;--card:#202326;--ink:#e9e6df;--mut:#9aa0a3;--line:#33383c;--acc:#5cc2a6;--acc2:#1d3029;--mark:#6b5a12;--bar:#5cc2a6}}
+@font-face{font-family:'Amiri Quran';src:url(fonts/AmiriQuran-Regular.ttf) format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'Reem Kufi';src:url(fonts/ReemKufi.ttf) format('truetype');font-weight:400 700;font-display:swap}
+@font-face{font-family:'Montserrat';src:url(fonts/Montserrat.ttf) format('truetype');font-weight:100 900;font-display:swap}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px}
 h1{font-size:18px;margin:0 0 8px}
 main{padding:12px 16px 80px;max-width:760px;margin:0 auto}
-.ar{font-family:"Amiri","Scheherazade New","Noto Naskh Arabic","Traditional Arabic",serif;direction:rtl;text-align:right}
+.ar{font-family:"Amiri Quran","Amiri","Scheherazade New","Noto Naskh Arabic","Traditional Arabic",serif;direction:rtl;text-align:right}
 .row{display:flex;gap:8px;align-items:center}
 input[type=text]{flex:1;font-size:22px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);min-width:0}
 button,select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
@@ -41,9 +44,15 @@ mark{background:var(--mark);color:inherit;border-radius:4px;padding:0 2px}
 .chip{direction:ltr}
 .note{background:var(--acc2);border-radius:10px;padding:8px 12px;font-size:14px}
 a{color:var(--acc)}
-.ttl{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 8px}
-.ttl-ar{font-size:26px;line-height:1.3;font-weight:700;color:var(--acc);text-align:right}
-#info{font-size:20px;line-height:1;padding:6px 10px;border-radius:999px;color:var(--acc);order:-1}
+.ttl{position:relative;display:block;text-align:center;margin:0 0 10px;padding:0 44px}
+.ttl-ar{font-family:"Reem Kufi","Amiri Quran","Amiri",serif;font-size:30px;line-height:1.45;font-weight:600;color:var(--acc);text-align:center}
+.ttl-ln{width:96px;height:2px;background:#c9a24a;margin:2px auto 6px;border-radius:2px}
+.ttl-sub{font:500 10.5px/1.5 Montserrat,system-ui,sans-serif;letter-spacing:1.8px;text-transform:uppercase;color:var(--mut);text-wrap:balance}
+#info{position:absolute;right:-6px;top:0;font-size:20px;line-height:1;padding:6px 10px;border-radius:999px;color:var(--acc)}
+.fold{border-top:1px solid var(--line);margin-top:8px;padding-top:2px}
+.fold summary{cursor:pointer;color:var(--acc);font-weight:600;padding:8px 0}
+.fold .fb{font-size:14px;line-height:1.6;padding:0 0 6px}
+.fold .fb ul,.fold .fb ol{margin:4px 0;padding-left:20px}.fold .fb li{margin:3px 0}
 .qw{position:relative;flex:1;min-width:0}.qw input{width:100%}
 .sg{position:absolute;left:0;right:0;top:100%;margin-top:4px;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.18);z-index:20;overflow:hidden;direction:rtl}
 .sg div{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer}
@@ -68,7 +77,7 @@ a{color:var(--acc)}
 </head>
 <body>
 <header>
-  <div class="ttl"><div><div class="ar ttl-ar">معجم ترتيب النزول</div><div class="mut">Kosakata al-Qur'an menurut Tartib Nuzul</div></div><button id="info" aria-label="Tentang aplikasi">ⓘ</button></div>
+  <div class="ttl"><div class="ar ttl-ar">معجم ترتيب النزول</div><div class="ttl-ln"></div><div class="ttl-sub">Kosakata al-Qur'an menurut Tartib Nuzul</div><button id="info" aria-label="Tentang aplikasi">ⓘ</button></div>
   <div class="row">
     <div class="qw"><input id="q" type="text" class="ar" dir="rtl" placeholder="اكتب جذرًا أو كلمة" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text"><div id="sg" class="sg" hidden></div></div>
     <button class="p" id="go">Cari</button>
@@ -304,23 +313,31 @@ function periodChips(){
 }
 function about(){
   const m=DATA.meta;
+  const sec=(t,b)=>`<details class="fold"><summary>${t}</summary><div class="fb">${b}</div></details>`;
+  const metod=`<ol>
+   <li>Akar kata berasal dari Quranic Arabic Corpus.</li>
+   <li>Bukan dari Mu'jam Mufahras (Fu'ad Abd al-Baqi); pengelompokan akar pada sebagian kata bisa berbeda.</li>
+   <li>Tartib nuzul tidak tunggal: pilih versi di layar hasil.</li>
+   <li>Tartib dihitung per surah (kecuali segmen khusus pada versi al-Jabiri).</li></ol>`;
+  const versi=`<ul>
+   <li><b>Mushaf Kairo 1924</b>: edisi standar Mesir (Raja Fu'ad).</li>
+   <li><b>Riwayat klasik (Ibn ʿAbbas)</b>: al-Fatihah tidak tercantum.</li>
+   <li><b>Mushaf Ibn ʿAbbas (al-Syahrastani)</b>: susunan mushaf, al-Fatihah urutan ke-6, tanpa klasifikasi periode.</li>
+   <li><b>al-Jabiri</b>: surah 96 dan 74 dipecah per ayat; sisipan ditampilkan sebagai “setelah #n”.</li>
+   <li><b>Nöldeke–Schwally</b>: periode Makkah (awal, tengah, akhir) dan Madinah menurut <i>Geschichte des Qorans</i>; pengecualian ayat dipetakan dari penomoran Flügel ke Kairo.</li>
+   <li><b>Darwazah</b>: urutan nuzul menurut Darwazah dalam <i>at-Tafsir al-Hadits</i>; pengecualian ayat berdasarkan penilaiannya sendiri.</li></ul>`;
+  const exc=`<p>Ayat yang periodenya menyimpang dari periode surahnya ditandai ⚑ pada kartu ayat. Hanya yang berstatus <i>pasti</i> ikut menentukan penyaringan dan statistik.</p><ul>
+   ${V.map(v=>DATA.meta["pengecualian_"+v.kode]?`<li><b>${esc(v.nama)}</b>: ${esc(DATA.meta["pengecualian_"+v.kode])}</li>`:"").join("")}</ul>`;
+  const sumber=`<ul>
+   <li>Teks al-Qur'an: <a href="http://tanzil.net">Tanzil</a> (Utsmani, tanpa perubahan).</li>
+   <li>Terjemah: Kementerian Agama RI 2010, melalui Tanzil.</li>
+   <li>Akar dan morfologi: <a href="http://corpus.quran.com">Quranic Arabic Corpus</a> (Kais Dukes, University of Leeds).</li>
+   <li>Font: Amiri Quran, Reem Kufi, Montserrat (SIL Open Font License).</li></ul>`;
+  const simpan=`<p>Tema dan catatan hanya disimpan di HP ini. Gunakan <i>Cadangkan</i> di tab Tema secara berkala.</p>`;
   return `<div class="card"><b>Tentang aplikasi</b>
-  <p>Alat bantu penelitian tafsir maudhu'i: mencari kata/akar dalam al-Qur'an dan menampilkan hasilnya menurut tartib mushaf atau tartib nuzul.</p>
-  <p><b>Pengembang:</b> Miftahul Janah</p>
-  <p class="note"><b>Catatan metodologis.</b> Akar kata berasal dari anotasi Quranic Arabic Corpus, <u>bukan</u> dari kitab Mu'jam Mufahras Fu'ad Abd al-Baqi; pengelompokan akar pada sebagian kata bisa berbeda. Tartib nuzul tidak tunggal: pilih versi di layar hasil. Tartib dihitung per surah (kecuali segmen yang dicatat tersendiri pada versi al-Jabiri).</p>
-  <p><b>Sumber data</b></p><ul>
-  <li>${esc(m.sumber_teks)}</li><li>${esc(m.sumber_terjemah)}</li><li>${esc(m.sumber_morfologi)}</li></ul>
-  <p><b>Catatan per versi</b></p><ul>
-  <li><b>Mushaf Kairo 1924</b>: edisi standar Mesir (edisi Raja Fu'ad, 1342 H), juga dikenal sebagai Mushaf al-Amiriyyah. Dalam bukunya Amal menyebutnya "kronologi Mesir".</li>
-  <li><b>Riwayat klasik (Ibn 'Abbas)</b>: 113 surah. Al-Fatihah tidak tercantum; menurut Amal, ketiadaan surah 1 terjadi pada hampir semua riwayat kronologis (hlm. 104). Ayat al-Fatihah ditampilkan di akhir daftar dengan keterangan "tidak ada dalam daftar".</li>
-  <li><b>Mushaf Ibn 'Abbas menurut al-Syahrastani</b>: susunan <i>mushaf</i>, bukan riwayat kronologis; dikutip az-Zanjani (Amal hlm. 212-214). Memuat 114 surah dengan al-Fatihah di urutan ke-6. Sumbernya tidak mengklasifikasikan periode.</li>
-  <li><b>al-Jabiri</b>: surah 96 dan 74 dipecah per ayat; bagian yang "disisipkan" tidak punya nomor urut sendiri dan ditampilkan sebagai "setelah #n".</li></ul>
-  <p><b>Pengecualian periode tingkat ayat</b> (ditandai ⚑ pada kartu ayat; hanya yang berstatus <i>pasti</i> ikut menentukan periode ayat pada penyaringan dan statistik)</p><ul>
-  ${V.map(v=>DATA.meta["pengecualian_"+v.kode]?`<li><b>${esc(v.nama)}</b>: ${esc(DATA.meta["pengecualian_"+v.kode])}</li>`:"").join("")}</ul>
-  <p><b>Tema dan catatan</b> disimpan di browser HP ini saja. Jika data browser dibersihkan atau berkas dipindah, isinya bisa hilang; gunakan <i>Cadangkan</i> di tab Tema secara berkala.</p>
-  <p><b>Rujukan tiap versi tartib</b> (sebagaimana dicatat pada berkas data pengguna)</p><ul>
-  ${V.map(v=>`<li><b>${esc(v.nama)}</b>: ${esc(v.rujukan)}</li>`).join("")}</ul>
-  <p class="mut">Sumber: <a href="http://tanzil.net">tanzil.net</a> · <a href="http://corpus.quran.com">corpus.quran.com</a></p></div>`;
+  <p>Alat bantu penelitian tafsir maudhu'i: cari kata atau akar, lihat hasilnya menurut tartib mushaf atau tartib nuzul.</p>
+  <p class="mut">Pengembang: Miftahul Janah · Versi 0.2.0</p>
+  ${sec("Catatan metodologis",metod)}${sec("Catatan per versi",versi)}${sec("Pengecualian ayat (⚑)",exc)}${sec("Sumber data",sumber)}${sec("Penyimpanan data",simpan)}</div>`;
 }
 function temaTab(){
   const nCat=Object.keys(CAT).filter(k=>CAT[k]).length;
