@@ -73,6 +73,23 @@ a{color:var(--acc)}
 .mbox input.nm{width:100%;font-size:16px;margin-top:8px;direction:ltr;text-align:left;font-family:inherit}
 .mlist{display:flex;flex-direction:column;gap:6px;margin-top:8px}.mlist button{text-align:left}
 .nt textarea{width:100%;margin-top:6px;font:inherit;font-size:15px;padding:8px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);resize:vertical}
+.cmpt{width:100%;table-layout:fixed;border-collapse:collapse;font-size:13px}
+.cmpt th{font-weight:600;color:var(--mut);font-size:11px;padding:0 0 6px;text-align:center;cursor:pointer;white-space:nowrap}
+.cmpt th.on{color:var(--acc)}
+.cmpt td{padding:0;border-top:1px solid var(--line);text-align:center;height:36px}
+.cmpt td.n{text-align:left;padding-right:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.2}
+.cmpt td.n small{display:block;color:var(--mut);font-size:11px}
+.cmpt .cl{display:block;margin:2px 1px;border-radius:5px;line-height:32px}
+.cmpt .h1{background:#faeeda;color:#633806}.cmpt .h2{background:#fcebeb;color:#791f1f}.cmpt .na{color:var(--mut)}
+@media (prefers-color-scheme:dark){.cmpt .h1{background:#4a3a14;color:#f3d9a0}.cmpt .h2{background:#4d2323;color:#f4bcbc}}
+.lgd{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:10px 0 4px}.lgd i{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin-right:4px}
+.cp{margin-top:10px;padding-top:6px;border-top:1px dashed var(--line)}
+.vr{display:grid;grid-template-columns:104px 1fr;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.vr:first-of-type{border-top:0}
+.vr .nm{font-size:13px;line-height:1.3}.vr .nm small{display:block;color:var(--mut);font-size:11px}.vr.cur .nm b{color:var(--acc)}
+.trk{position:relative;height:6px;border-radius:3px;background:var(--line);margin:6px 7px 0}
+.trk i{position:absolute;top:-4px;width:14px;height:14px;border-radius:50%;background:var(--acc);transform:translateX(-50%)}
+.tl{display:flex;justify-content:space-between;font-size:11px;color:var(--mut);margin-top:3px}.tl b{color:var(--ink);font-weight:600}
 </style>
 </head>
 <body>
@@ -285,7 +302,7 @@ function ayahCard(g){
    ${exLine(st.v,g.s,g.n)}
    <div class="tr" ${st.tr?"":'hidden'}>${esc(a[3])}</div>
    <div class="nt" ${note?"":"hidden"}><textarea placeholder="Catatan Anda untuk ayat ini…" rows="3">${esc(note)}</textarea></div>
-   <div class="act">${st.tr?"":'<button class="trb">Lihat terjemah</button>'}<button class="cpy">Salin</button><button class="kut">Kutip</button><button class="ntb ${note?"on":""}">Catatan${note?" ✓":""}</button><button class="addt">+ Tema</button>${man?'<button class="rmt">Keluarkan dari tema</button>':""}</div>
+   <div class="act">${st.tr?"":'<button class="trb">Lihat terjemah</button>'}<button class="cpy">Salin</button><button class="kut">Kutip</button><button class="cmpb">Bandingkan</button><button class="ntb ${note?"on":""}">Catatan${note?" ✓":""}</button><button class="addt">+ Tema</button>${man?'<button class="rmt">Keluarkan dari tema</button>':""}</div>
   </div>`;
 }
 function statsHtml(list,h){
@@ -318,7 +335,8 @@ function about(){
    <li>Akar kata berasal dari Quranic Arabic Corpus.</li>
    <li>Bukan dari Mu'jam Mufahras (Fu'ad Abd al-Baqi); pengelompokan akar pada sebagian kata bisa berbeda.</li>
    <li>Tartib nuzul tidak tunggal: pilih versi di layar hasil.</li>
-   <li>Tartib dihitung per surah (kecuali segmen khusus pada versi al-Jabiri).</li></ol>`;
+   <li>Tartib dihitung per surah (kecuali segmen khusus pada versi al-Jabiri).</li>
+   <li>Layar Bandingkan menampilkan urutan tiap surah pada enam versi. Sel berwarna hanya menandai jarak dari nilai tengah, bukan penilaian benar atau salah; angka antarversi tidak persis sebanding karena daftar tiap versi berbeda panjangnya.</li></ol>`;
   const versi=`<ul>
    <li><b>Mushaf Kairo 1924</b>: edisi standar Mesir (Raja Fu'ad).</li>
    <li><b>Riwayat klasik (Ibn ʿAbbas)</b>: al-Fatihah tidak tercantum.</li>
@@ -367,6 +385,7 @@ function render(){
   const tabs=`<div class="tabs"><button data-t="hasil" class="${st.tab==="hasil"?"on":""}">Hasil</button><button data-t="stat" class="${st.tab==="stat"?"on":""}">Statistik</button><button data-t="tema" class="${st.tab==="tema"?"on":""}">Tema</button></div>`;
   if(st.tab==="about"){app.innerHTML='<div class="tabs"><button data-t="hasil">← Kembali</button></div>'+about();return}
   if(st.tab==="tema"){app.innerHTML=tabs+temaTab();return}
+  if(st.tab==="bandingkan"){if(st.mode&&st.mode!=="kosong"){app.innerHTML=bandingkanTab();return}st.tab="hasil"}
   if(!st.mode){app.innerHTML=tabs+`<div class="card">Ketik <b>akar</b> (mis. <span class="ar">جهد</span>) atau <b>bentuk kata</b> (mis. <span class="ar">جاهدوا</span>) lalu tekan Cari. Harakat diabaikan. Untuk akar, hasilnya mencakup semua turunan; Anda bisa memilih bentuk tertentu saja.<div class="mut" style="margin-top:6px">Untuk <b>dua akar sekaligus</b>, pisahkan dengan tanda <b>+</b>, mis. <span class="ar">ظلم + عدل</span>: yang tampil hanya ayat yang memuat keduanya.</div></div>`;return}
   if(st.mode==="kosong"){app.innerHTML=tabs+`<div class="card">${st.miss?`Tidak ditemukan: ${st.miss.map(x=>"“"+esc(x)+"”").join(", ")}.`:`Tidak ada akar atau kata yang cocok dengan “${esc(st.q)}”.`} Coba tulis akar tiga huruf, atau bentuk kata tanpa awalan/akhiran. Kata yang mengandung hamzah di atas kursi bisa tertulis berbeda; untuk itu cari lewat akarnya.</div>`;return}
   const h=hits(),list=groupHits(h);
@@ -404,6 +423,7 @@ function render(){
     <select id="ver">${V.map((v,i)=>`<option value="${i}" ${i===st.v?"selected":""}>${esc(namaPendek(v))}</option>`).join("")}</select>
     <div class="seg"><button data-u="nuzul" class="${st.urut==="nuzul"?"on":""}">Urut nuzul</button><button data-u="mushaf" class="${st.urut==="mushaf"?"on":""}">Urut mushaf</button></div>
     <div class="acts"><button id="trall" class="${st.tr?"on":""}">Terjemah</button><button id="cpall">Salin semua</button><button id="csv">Ekspor CSV</button></div>
+    ${list.length?`<div class="btns" style="margin-top:8px"><button id="cmpbtn">Bandingkan enam versi (${new Set(baseHits().map(x=>A[x[0]][0])).size} surah)</button></div>`:""}
     <div class="mut cnt">${list.length} ayat · ${h.length} kemunculan</div>${periodChips()}</div>`;
   let body;
   if(st.tab==="stat")body=h.length?statsHtml(list,h):"";
@@ -492,6 +512,12 @@ $("app").addEventListener("click",e=>{
   if(t.closest("#kbib")){unduh("mujam-tartib-nuzul.bib","application/x-bibtex",kutipApp("bib"));return}
   if(t.closest("#cpall")){salinSemua();return}
   if(t.closest("#csv")){eksporCsv();return}
+  const sh=t.closest("[data-cc]");if(sh){const c=sh.dataset.cc;st.cmpSort=c==="m"?"m":+c;render();return}
+  if(t.closest("#cmpbtn")){st.cmpSort=null;st.tab="bandingkan";render();window.scrollTo(0,0);return}
+  if(t.closest("#cmptsv")){salin(cmpTabelText());return}
+  if(t.closest("#cmpcsv")){eksporCmp();return}
+  const cb=t.closest(".cmpb");if(cb){const card=cb.closest(".card"),ex=card.querySelector(".cp");if(ex){ex.remove();cb.classList.remove("on")}else{card.insertAdjacentHTML("beforeend",cmpAyat(+card.dataset.ai));cb.classList.add("on")}return}
+  const cq=t.closest(".cmpcp");if(cq){salin(cmpAyatText(+cq.closest(".card").dataset.ai));return}
   const kt=t.closest(".kut");if(kt){const card=kt.closest(".card");salin(sitasiLengkap(+card.dataset.ai,!card.querySelector(".tr").hidden));return}
   const cp=t.closest(".cpy");if(cp){const card=cp.closest(".card");salin(kutip(+card.dataset.ai,!card.querySelector(".tr").hidden));return}
   const nb=t.closest(".ntb");if(nb){const card=nb.closest(".card"),nt=card.querySelector(".nt");nt.hidden=!nt.hidden;if(!nt.hidden)nt.querySelector("textarea").focus();return}
@@ -558,7 +584,7 @@ function kutip(ai,denganTr){
   const a=A[ai];let s=a[2]+"\n— QS. "+S[a[0]-1][1]+" ("+a[0]+"):"+a[1];
   if(denganTr)s+="\n"+a[3];return s;
 }
-const APPV="0.3.4";
+const APPV="0.4.0";
 const APPDOI="10.5281/zenodo.24106183";
 const LIC_TZ="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nTanzil Quran Text (Uthmani, Version 1.1)\nCopyright (C) 2007-2026 Tanzil Project\nLicense: Creative Commons Attribution 3.0\n\nThis copy of the Quran text is carefully produced, highly\nverified and continuously monitored by a group of specialists\nat Tanzil Project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this text, but CHANGING IT IS NOT ALLOWED.\n\n- This Quran text can be used in any website or application,\n  provided that its source (Tanzil Project) is clearly indicated,\n  and a link is made to tanzil.net to enable users to keep\n  track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all files\n  derived from or containing substantial portion of this text.\n\nPlease check updates at: http://tanzil.net/updates/";
 const LIC_QA="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nQuranic Arabic Corpus (morphology, version 0.4)\nCopyright (C) 2011 Kais Dukes\nLicense: GNU General Public License\n\nThe Quranic Arabic Corpus includes syntactic and morphological\nannotation of the Quran, and builds on the verified Arabic text\ndistributed by the Tanzil project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this file, but CHANGING IT IS NOT ALLOWED.\n\n- This annotation can be used in any website or application,\n  provided its source (the Quranic Arabic Corpus) is clearly\n  indicated, and a link is made to http://corpus.quran.com to enable\n  users to keep track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all works\n  derived from or containing substantial portion of this file.\n\nPlease check updates at: http://corpus.quran.com/download";
@@ -587,6 +613,79 @@ function sitasiLengkap(ai,denganTr){
   if(perA&&perS&&perA!==perS)t+="\nCatatan: periode ayat ini ("+perA+") berbeda dari periode surahnya ("+perS+").";
   t+="\nTeks: Tanzil (tanzil.net). Terjemah: Kemenag RI 2010. Akar kata: Quranic Arabic Corpus (corpus.quran.com).";
   t+="\nDitelusuri melalui: "+kutipApp("apa");
+  return t;
+}
+/* ===== bandingkan versi ===== */
+const SHV={kairo:"Kairo",noldeke:"Nöld.",darwazah:"Darw.",klasik:"Klasik",syahrastani:"Syahr.",jabiri:"Jabiri"};
+const shv=v=>SHV[v.kode]||String(v.nama).slice(0,6);
+const MEDV={kairo:"Mushaf Kairo",noldeke:"Nöldeke–Schwally",darwazah:"Darwazah",klasik:"Riwayat klasik",syahrastani:"Syahrastani",jabiri:"Al-Jabiri"};
+const medv=v=>MEDV[v.kode]||namaPendek(v);
+const posTxt=p=>p===null?"—":(Number.isInteger(p)?String(p):Math.floor(p)+"+");
+function cmpRows(){
+  const by=new Map();
+  new Set(baseHits().map(x=>x[0])).forEach(ai=>{const s=A[ai][0];if(!by.has(s))by.set(s,[]);by.get(s).push(A[ai][1])});
+  const rows=[...by.entries()].map(([s,ns])=>{
+    ns.sort((a,b)=>a-b);
+    const vals=V.map((v,vi)=>{const ps=ns.map(n=>posOf(vi,s,n));return {p:ps[0],multi:ps.some(p=>p!==ps[0])}});
+    return {s,n:ns.length,vals};
+  });
+  const c=st.cmpSort===undefined||st.cmpSort===null?st.v:st.cmpSort;
+  const num=(r)=>{const p=c==="m"?r.s:r.vals[c].p;return p===null?9999:p};
+  rows.sort((a,b)=>num(a)-num(b)||a.s-b.s);
+  return {rows,col:c};
+}
+function cmpHeat(r){
+  const nums=r.vals.map(x=>x.p).filter(p=>p!==null).map(Math.floor).sort((a,b)=>a-b);
+  if(nums.length<4)return ()=>"";
+  const m=nums.length%2?nums[(nums.length-1)/2]:(nums[nums.length/2-1]+nums[nums.length/2])/2;
+  return p=>{if(p===null)return "";const d=Math.abs(Math.floor(p)-m);return d>=40?"h2":d>=15?"h1":""};
+}
+function bandingkanTab(){
+  const {rows,col}=cmpRows();
+  const nAy=new Set(baseHits().map(x=>x[0])).size;
+  const head=`<tr><th data-cc="m" class="${col==="m"?"on":""}" style="text-align:left">Surah${col==="m"?" ↑":""}</th>${V.map((v,i)=>`<th data-cc="${i}" class="${col===i?"on":""}">${esc(shv(v))}${col===i?" ↑":""}</th>`).join("")}</tr>`;
+  const body=rows.map(r=>{const hf=cmpHeat(r);
+    return `<tr><td class="n">${esc(S[r.s-1][1])}<small>no. ${r.s} · ${r.n} ayat</small></td>`+r.vals.map(x=>`<td><span class="cl ${hf(x.p)} ${x.p===null?"na":""}">${posTxt(x.p)}${x.multi?"*":""}</span></td>`).join("")+"</tr>";}).join("");
+  return `<div class="tabs"><button data-t="hasil">← Hasil</button></div>
+  <div class="card"><b>Bandingkan versi tartib</b> <span class="mut">— ${esc(judulHasil())}</span>
+   <div class="mut">${rows.length} surah · ${nAy} ayat · semua hasil pencarian (filter periode tidak berlaku)</div>
+   <table class="cmpt" style="margin-top:10px"><colgroup><col style="width:31%">${V.map(()=>"<col>").join("")}</colgroup><thead>${head}</thead><tbody>${body}</tbody></table>
+   <div class="lgd"><span><i style="background:#faeeda"></i>15–39 dari nilai tengah</span><span><i style="background:#fcebeb"></i>40 atau lebih</span></div>
+   <div class="mut">Angka = urutan nuzul surah menurut tiap versi. “—” = tidak ada dalam daftar versi itu. “n+” = disisipkan setelah ke-n. “*” = ayat-ayat surah ini punya posisi berbeda pada versi itu (yang tampil: ayat pertama yang cocok). Warna hanya penanda jarak dari nilai tengah keenam versi, bukan penilaian benar atau salah. Ketuk judul kolom untuk mengurutkan.</div>
+   <div class="btns" style="margin-top:10px"><button id="cmptsv">Salin tabel</button><button id="cmpcsv">Ekspor CSV</button></div></div>`;
+}
+function cmpTabelText(){
+  const {rows}=cmpRows();
+  let s="Perbandingan urutan nuzul: "+judulHasil()+" ("+rows.length+" surah)\n\n";
+  s+=["Surah","Mushaf","Ayat cocok"].concat(V.map(shv)).join("\t")+"\n";
+  s+=rows.map(r=>[S[r.s-1][1],r.s,r.n].concat(r.vals.map(x=>posTxt(x.p)+(x.multi?"*":""))).join("\t")).join("\n");
+  s+="\n\nKeterangan: angka = urutan nuzul surah menurut tiap versi; — = tidak ada dalam daftar; n+ = disisipkan setelah ke-n; * = posisi ayat berbeda dalam surah itu.\nVersi: "+V.map(v=>shv(v)+" = "+v.nama).join("; ")+".\nSumber teks: Tanzil (tanzil.net); akar: Quranic Arabic Corpus (corpus.quran.com).\nDitelusuri melalui: "+kutipApp("apa");
+  return s;
+}
+function eksporCmp(){
+  const {rows}=cmpRows();const q=x=>'"'+String(x??"").replace(/"/g,'""')+'"';
+  const meta="# Perbandingan versi tartib: "+judulHasil()+" | angka = urutan nuzul surah; kosong = tidak ada dalam daftar; n+ = disisipkan setelah ke-n; * = posisi ayat berbeda | sumber: Tanzil, Quranic Arabic Corpus";
+  const out=[["surah_no","nama_surah","ayat_cocok"].concat(V.map(v=>v.nama))].concat(rows.map(r=>[r.s,S[r.s-1][1],r.n].concat(r.vals.map(x=>x.p===null?"":posTxt(x.p)+(x.multi?"*":"")))));
+  unduh("bandingkan-mujam-"+tgl()+".csv","text/csv;charset=utf-8","﻿"+meta+"\r\n"+out.map(r=>r.map(q).join(",")).join("\r\n"));
+  toast("CSV diunduh ("+rows.length+" surah)");
+}
+function cmpAyat(ai){
+  const s=A[ai][0],n=A[ai][1];
+  const rows=V.map((v,vi)=>{
+    const p=posOf(vi,s,n),per=periodAy(vi,s,n),ex=exOf(vi,s,n);
+    let r;
+    if(p===null)r='<span class="mut">tidak ada dalam daftar</span>';
+    else{const pc=(Math.min(Math.max(p,1),114)-1)/113*100;
+      r=`<div class="trk"><i style="left:${pc}%"></i></div><div class="tl"><span>1</span><b>${Number.isInteger(p)?"Nuzul ke-"+p:"setelah ke-"+Math.floor(p)}</b><span>114</span></div>`}
+    return `<div class="vr ${vi===st.v?"cur":""}"><div class="nm"><b>${esc(medv(v))}</b><small>${esc(per)}${ex&&ex[4]==="pasti"?" ⚑":""}</small></div><div>${r}</div></div>`;
+  }).join("");
+  return `<div class="cp"><div class="mut">Posisi surah ${esc(S[s-1][1])} di enam versi (skala 1–114). ⚑ = periode ayat ini menyimpang dari periode surahnya.</div>${rows}<div class="act"><button class="cmpcp">Salin perbandingan</button></div></div>`;
+}
+function cmpAyatText(ai){
+  const s=A[ai][0],n=A[ai][1];
+  let t="QS. "+S[s-1][1]+" ("+s+"):"+n+": posisi di enam versi tartib nuzul\n";
+  t+=V.map((v,vi)=>{const p=posOf(vi,s,n);return "- "+namaPendek(v)+": "+(p===null?"tidak ada dalam daftar":(Number.isInteger(p)?"Nuzul ke-"+p:"disisipkan setelah ke-"+Math.floor(p))+" ("+periodAy(vi,s,n)+")")}).join("\n");
+  t+="\nMushaf ke-"+s+".\nTeks: Tanzil (tanzil.net).\nDitelusuri melalui: "+kutipApp("apa");
   return t;
 }
 function salinSemua(){
