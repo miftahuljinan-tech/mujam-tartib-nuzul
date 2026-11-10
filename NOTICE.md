@@ -6,7 +6,7 @@ Hak cipta (C) 2026 Miftahul Janah.
 
 | Bagian | Lisensi |
 |---|---|
-| Kode aplikasi dan skrip (`app/`, `pipeline/Skrip/`, `.github/`) | GNU General Public License v3.0 atau yang lebih baru (berkas `LICENSE`) |
+| Kode aplikasi dan skrip (`app/`, `pipeline/Skrip/`, `.github/`) | GNU General Public License v3.0 saja (GPL-3.0-only; berkas `LICENSE`) |
 | Data buatan pengembang: `pipeline/Data-Mentah/tartib_*`, `pipeline/Data-Mentah/pengecualian_ayat.json`, `docs/pengecualian-ayat.xlsx` | Creative Commons Atribusi-BerbagiSerupa 4.0 Internasional (berkas `LICENSE-DATA.md`) |
 
 Kedua lisensi mewajibkan Anda menyebut nama penyusun dan tetap membuka turunannya dengan lisensi yang sama.

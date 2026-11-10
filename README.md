@@ -41,7 +41,7 @@ Repositori ini memuat alur GitHub Actions (`.github/workflows/build-apk.yml`) ya
 
 ## Lisensi
 
-- Kode: GNU GPL v3 atau yang lebih baru (`LICENSE`).
+- Kode: GNU GPL v3 saja (`LICENSE`).
 - Data buatan pengembang: CC BY-SA 4.0 (`LICENSE-DATA.md`).
 - Teks Tanzil, anotasi Quranic Arabic Corpus, terjemah Kemenag RI, dan font tetap di bawah ketentuan masing-masing (`NOTICE.md`).
 

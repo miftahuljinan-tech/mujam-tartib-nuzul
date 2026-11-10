@@ -2,12 +2,12 @@ cff-version: 1.2.0
 message: "Jika Anda memakai aplikasi atau datanya, mohon kutip sebagai berikut."
 title: "Mu'jam Tartib Nuzul"
 type: software
-version: 0.3.1
+version: 0.3.2
 date-released: 2026-11-10
 authors:
   - family-names: Janah
     given-names: Miftahul
-license: GPL-3.0-or-later
+license: GPL-3.0-only
 repository-code: "https://github.com/miftahuljinan-tech/mujam-tartib-nuzul"
 abstract: "Aplikasi Android offline untuk mencari akar dan kata al-Qur'an dan melihat hasilnya menurut tartib mushaf atau enam versi tartib nuzul, untuk penelitian tafsir maudhu'i."
 keywords:
