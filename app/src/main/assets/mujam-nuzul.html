@@ -285,7 +285,7 @@ function ayahCard(g){
    ${exLine(st.v,g.s,g.n)}
    <div class="tr" ${st.tr?"":'hidden'}>${esc(a[3])}</div>
    <div class="nt" ${note?"":"hidden"}><textarea placeholder="Catatan Anda untuk ayat ini…" rows="3">${esc(note)}</textarea></div>
-   <div class="act">${st.tr?"":'<button class="trb">Lihat terjemah</button>'}<button class="cpy">Salin</button><button class="ntb ${note?"on":""}">Catatan${note?" ✓":""}</button><button class="addt">+ Tema</button>${man?'<button class="rmt">Keluarkan dari tema</button>':""}</div>
+   <div class="act">${st.tr?"":'<button class="trb">Lihat terjemah</button>'}<button class="cpy">Salin</button><button class="kut">Kutip</button><button class="ntb ${note?"on":""}">Catatan${note?" ✓":""}</button><button class="addt">+ Tema</button>${man?'<button class="rmt">Keluarkan dari tema</button>':""}</div>
   </div>`;
 }
 function statsHtml(list,h){
@@ -333,11 +333,14 @@ function about(){
    <li>Terjemah: Kementerian Agama RI 2010, melalui Tanzil.</li>
    <li>Akar dan morfologi: <a href="http://corpus.quran.com">Quranic Arabic Corpus</a> (Kais Dukes, University of Leeds).</li>
    <li>Font: Amiri Quran, Reem Kufi, Montserrat (SIL Open Font License).</li></ul>`;
+  const kutip=`<p>Cara mengutip aplikasi ini:</p><p class="note"><b>APA</b><br>${esc(kutipApp("apa"))}</p><p class="note"><b>Chicago</b><br>${esc(kutipApp("chicago"))}</p>
+   <div class="acts" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button id="kapa">Salin APA</button><button id="kchi">Salin Chicago</button><button id="kris">Unduh RIS</button><button id="kbib">Unduh BibTeX</button></div>
+   <p class="mut" style="margin-top:8px">Berkas RIS dan BibTeX bisa diimpor ke Mendeley atau Zotero. DOI akan ditambahkan setelah rilis publik.</p>`;
   const simpan=`<p>Tema dan catatan hanya disimpan di HP ini. Gunakan <i>Cadangkan</i> di tab Tema secara berkala.</p>`;
   return `<div class="card"><b>Tentang aplikasi</b>
   <p>Alat bantu penelitian tafsir maudhu'i: cari kata atau akar, lihat hasilnya menurut tartib mushaf atau tartib nuzul.</p>
-  <p class="mut">Pengembang: Miftahul Janah · Versi 0.2.1</p>
-  ${sec("Catatan metodologis",metod)}${sec("Catatan per versi",versi)}${sec("Pengecualian ayat (⚑)",exc)}${sec("Sumber data",sumber)}${sec("Penyimpanan data",simpan)}</div>`;
+  <p class="mut">Pengembang: Miftahul Janah · Versi ${APPV}</p>
+  ${sec("Catatan metodologis",metod)}${sec("Catatan per versi",versi)}${sec("Pengecualian ayat (⚑)",exc)}${sec("Sumber data",sumber)}${sec("Kutip aplikasi ini",kutip)}${sec("Penyimpanan data",simpan)}</div>`;
 }
 function temaTab(){
   const nCat=Object.keys(CAT).filter(k=>CAT[k]).length;
@@ -391,9 +394,8 @@ function render(){
   }else if(st.mode==="catatan"){
     top=`<div class="card orn"><div class="kt">Catatan saya</div><div class="mut">${list.length} ayat bercatatan</div><hr class="hr"><div class="btns"><button id="tback">← Daftar tema</button></div></div>`;
   }
-  const SHORT={kairo:"Mushaf Kairo 1924",noldeke:"Nöldeke–Schwally",darwazah:"Darwazah",klasik:"Riwayat klasik (Ibn ʿAbbas)",syahrastani:"Mushaf Ibn ʿAbbas (Syahrastani)",jabiri:"Al-Jabiri"};
   const ctl=`<div class="card ctl"><div class="lb">Versi tartib</div>
-    <select id="ver">${V.map((v,i)=>`<option value="${i}" ${i===st.v?"selected":""}>${esc(SHORT[v.kode]||v.nama)}</option>`).join("")}</select>
+    <select id="ver">${V.map((v,i)=>`<option value="${i}" ${i===st.v?"selected":""}>${esc(namaPendek(v))}</option>`).join("")}</select>
     <div class="seg"><button data-u="nuzul" class="${st.urut==="nuzul"?"on":""}">Urut nuzul</button><button data-u="mushaf" class="${st.urut==="mushaf"?"on":""}">Urut mushaf</button></div>
     <div class="acts"><button id="trall" class="${st.tr?"on":""}">Terjemah</button><button id="cpall">Salin semua</button><button id="csv">Ekspor CSV</button></div>
     <div class="mut cnt">${list.length} ayat · ${h.length} kemunculan</div>${periodChips()}</div>`;
@@ -478,8 +480,13 @@ $("app").addEventListener("click",e=>{
   const c=t.closest(".chip");if(c&&c.dataset.f!==undefined){const k=c.dataset.f;st.forms.has(k)?st.forms.delete(k):st.forms.add(k);st.shown=50;render();return}
   if(t.closest("#all")){e.preventDefault();selectRoot(st.rootId);return}
   if(t.closest("#none")){e.preventDefault();st.forms=new Set();render();return}
+  if(t.closest("#kapa")){salin(kutipApp("apa"));return}
+  if(t.closest("#kchi")){salin(kutipApp("chicago"));return}
+  if(t.closest("#kris")){unduh("mujam-tartib-nuzul.ris","application/x-research-info-systems",kutipApp("ris"));return}
+  if(t.closest("#kbib")){unduh("mujam-tartib-nuzul.bib","application/x-bibtex",kutipApp("bib"));return}
   if(t.closest("#cpall")){salinSemua();return}
   if(t.closest("#csv")){eksporCsv();return}
+  const kt=t.closest(".kut");if(kt){const card=kt.closest(".card");salin(sitasiLengkap(+card.dataset.ai,!card.querySelector(".tr").hidden));return}
   const cp=t.closest(".cpy");if(cp){const card=cp.closest(".card");salin(kutip(+card.dataset.ai,!card.querySelector(".tr").hidden));return}
   const nb=t.closest(".ntb");if(nb){const card=nb.closest(".card"),nt=card.querySelector(".nt");nt.hidden=!nt.hidden;if(!nt.hidden)nt.querySelector("textarea").focus();return}
   const at=t.closest(".addt");if(at){const ai=+at.closest(".card").dataset.ai;pickTema("Tambahkan ayat "+akey(ai)+" ke tema",tm=>{if(!tm.ayat.includes(akey(ai)))tm.ayat.push(akey(ai));saveTema();toast("Ayat ditambahkan ke “"+tm.nama+"”")});return}
@@ -545,11 +552,38 @@ function kutip(ai,denganTr){
   const a=A[ai];let s=a[2]+"\n— QS. "+S[a[0]-1][1]+" ("+a[0]+"):"+a[1];
   if(denganTr)s+="\n"+a[3];return s;
 }
+const APPV="0.3.0";
+function namaPendek(v){
+  const M={kairo:"Mushaf Kairo 1924",noldeke:"Nöldeke–Schwally",darwazah:"Darwazah",klasik:"Riwayat klasik (Ibn ʿAbbas)",syahrastani:"Mushaf Ibn ʿAbbas (Syahrastani)",jabiri:"Al-Jabiri"};
+  return M[v.kode]||v.nama;
+}
+function kutipApp(f){
+  f=f||"apa";
+  if(f==="chicago")return "Janah, Miftahul. 2026. Mu'jam Tartib Nuzul. Versi "+APPV+". Aplikasi Android.";
+  if(f==="ris")return ["TY  - COMP","TI  - Mu'jam Tartib Nuzul","AU  - Janah, Miftahul","PY  - 2026","ET  - "+APPV,"M3  - Aplikasi Android","N1  - Teks: Tanzil; terjemah: Kemenag RI 2010; akar: Quranic Arabic Corpus (Dukes)","ER  - ",""].join("\r\n");
+  if(f==="bib")return "@software{janah2026mujam,\n  author  = {Janah, Miftahul},\n  title   = {Mu'jam Tartib Nuzul},\n  year    = {2026},\n  version = {"+APPV+"},\n  note    = {Aplikasi Android}\n}\n";
+  return "Janah, M. (2026). Mu'jam Tartib Nuzul (Versi "+APPV+") [Aplikasi Android].";
+}
+function sitasiLengkap(ai,denganTr){
+  const a=A[ai],s=a[0],n=a[1],v=V[st.v];
+  const p=posOf(st.v,s,n),perS=periodOf(st.v,s),perA=periodAy(st.v,s,n);
+  const nama="QS. "+S[s-1][1]+" ("+s+"):"+n;
+  let t=nama+".\n"+a[2];
+  if(denganTr)t+="\n"+a[3];
+  const bag=[perA];
+  if(p!==null)bag.push(Number.isInteger(p)?"Nuzul ke-"+p:"Nuzul disisipkan setelah ke-"+Math.floor(p));
+  bag.push("Mushaf ke-"+s);
+  t+="\n\nVersi tartib: "+namaPendek(v)+" ("+bag.join("; ")+")."
+  if(perA&&perS&&perA!==perS)t+="\nCatatan: periode ayat ini ("+perA+") berbeda dari periode surahnya ("+perS+").";
+  t+="\nTeks: Tanzil (tanzil.net). Terjemah: Kemenag RI 2010. Akar kata: Quranic Arabic Corpus (corpus.quran.com).";
+  t+="\nDitelusuri melalui: "+kutipApp("apa");
+  return t;
+}
 function salinSemua(){
   const list=groupHits(hits());const v=V[st.v];
   let s="Hasil pencarian "+judulHasil()+" — "+v.nama+", urut "+(st.urut==="nuzul"?"nuzul":"mushaf")+" ("+list.length+" ayat)\n\n";
   s+=list.map((g,i)=>{const p=posOf(st.v,g.s,g.n);return (i+1)+". QS. "+S[g.s-1][1]+" ("+g.s+"):"+g.n+" ["+periodOf(st.v,g.s)+(p===null?"":", nuzul "+(Number.isInteger(p)?"ke-"+p:"setelah ke-"+Math.floor(p)))+"]\n"+kutip(g.ai,st.tr).split("\n").filter((x,j)=>j!==1).join("\n")}).join("\n\n");
-  s+="\n\nSumber teks: Tanzil (tanzil.net); terjemah: Kemenag RI; akar: Quranic Arabic Corpus (corpus.quran.com).";
+  s+="\n\nSumber teks: Tanzil (tanzil.net); terjemah: Kemenag RI; akar: Quranic Arabic Corpus (corpus.quran.com).\nDitelusuri melalui: "+kutipApp("apa");
   salin(s);
 }
 
