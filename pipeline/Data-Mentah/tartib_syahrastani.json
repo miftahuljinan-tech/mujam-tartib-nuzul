@@ -1,0 +1,580 @@
+{
+ "versi": "Mushaf Ibn Abbas menurut al-Syahrastani (dikutip az-Zanjani dari mukadimah tafsir al-Syahrastani); sumber: T.A. Amal, Rekonstruksi Sejarah al-Quran hlm. 212-214 (catatan kaki 66). Susunan mushaf, bukan riwayat kronologis; tanpa klasifikasi periode di sumber.",
+ "halaman": "212-214",
+ "catatan": [
+  "Nomor urut 77 tertulis 'al-Nisa'' di buku, tetapi nomor surahnya 78 (an-Naba'); data mengikuti nomor surah.",
+  "Nama dan nomor surah di buku mengikuti edisi al-Quran Indonesia."
+ ],
+ "urutan": [
+  {
+   "no": 1,
+   "nama_buku": "Iqra’",
+   "surah": 96
+  },
+  {
+   "no": 2,
+   "nama_buku": "Nûn",
+   "surah": 68
+  },
+  {
+   "no": 3,
+   "nama_buku": "Wa-l-dluhã",
+   "surah": 93
+  },
+  {
+   "no": 4,
+   "nama_buku": "al-Muzzammil",
+   "surah": 73
+  },
+  {
+   "no": 5,
+   "nama_buku": "al-Muddatstsir",
+   "surah": 74
+  },
+  {
+   "no": 6,
+   "nama_buku": "al-Fãtihah",
+   "surah": 1
+  },
+  {
+   "no": 7,
+   "nama_buku": "Tabbat yadã",
+   "surah": 111
+  },
+  {
+   "no": 8,
+   "nama_buku": "Kuwwirat",
+   "surah": 81
+  },
+  {
+   "no": 9,
+   "nama_buku": "al-A‘lã",
+   "surah": 87
+  },
+  {
+   "no": 10,
+   "nama_buku": "Wa-l-layl",
+   "surah": 92
+  },
+  {
+   "no": 11,
+   "nama_buku": "Wa-l-fajr",
+   "surah": 89
+  },
+  {
+   "no": 12,
+   "nama_buku": "Alam Nasyrah",
+   "surah": 94
+  },
+  {
+   "no": 13,
+   "nama_buku": "al-Rahmãn",
+   "surah": 55
+  },
+  {
+   "no": 14,
+   "nama_buku": "Wa-l-‘Ashr",
+   "surah": 103
+  },
+  {
+   "no": 15,
+   "nama_buku": "al-Kawtsar",
+   "surah": 108
+  },
+  {
+   "no": 16,
+   "nama_buku": "al-Takãtsur",
+   "surah": 102
+  },
+  {
+   "no": 17,
+   "nama_buku": "al-Dîn",
+   "surah": 107
+  },
+  {
+   "no": 18,
+   "nama_buku": "al-Fîl",
+   "surah": 105
+  },
+  {
+   "no": 19,
+   "nama_buku": "al-Kãfirûn",
+   "surah": 109
+  },
+  {
+   "no": 20,
+   "nama_buku": "al-Ikhlãsh",
+   "surah": 112
+  },
+  {
+   "no": 21,
+   "nama_buku": "al-Najm",
+   "surah": 53
+  },
+  {
+   "no": 22,
+   "nama_buku": "al-A‘mã",
+   "surah": 80
+  },
+  {
+   "no": 23,
+   "nama_buku": "al-Qadr",
+   "surah": 97
+  },
+  {
+   "no": 24,
+   "nama_buku": "Wa-l-Syams",
+   "surah": 91
+  },
+  {
+   "no": 25,
+   "nama_buku": "al-Burûj",
+   "surah": 85
+  },
+  {
+   "no": 26,
+   "nama_buku": "al-Tîn",
+   "surah": 95
+  },
+  {
+   "no": 27,
+   "nama_buku": "Quraisy",
+   "surah": 106
+  },
+  {
+   "no": 28,
+   "nama_buku": "al-Qãri’ah",
+   "surah": 101
+  },
+  {
+   "no": 29,
+   "nama_buku": "al-Qiyãmah",
+   "surah": 75
+  },
+  {
+   "no": 30,
+   "nama_buku": "al-Humazah",
+   "surah": 104
+  },
+  {
+   "no": 31,
+   "nama_buku": "Wa-l-mursalãt",
+   "surah": 77
+  },
+  {
+   "no": 32,
+   "nama_buku": "Qãf",
+   "surah": 50
+  },
+  {
+   "no": 33,
+   "nama_buku": "al-Balad",
+   "surah": 90
+  },
+  {
+   "no": 34,
+   "nama_buku": "al-Thãriq",
+   "surah": 86
+  },
+  {
+   "no": 35,
+   "nama_buku": "al-Qamar",
+   "surah": 54
+  },
+  {
+   "no": 36,
+   "nama_buku": "Shãd",
+   "surah": 38
+  },
+  {
+   "no": 37,
+   "nama_buku": "al-A‘rãf",
+   "surah": 7
+  },
+  {
+   "no": 38,
+   "nama_buku": "al-Jinn",
+   "surah": 72
+  },
+  {
+   "no": 39,
+   "nama_buku": "Yã sîn",
+   "surah": 36
+  },
+  {
+   "no": 40,
+   "nama_buku": "al-Furqãn",
+   "surah": 25
+  },
+  {
+   "no": 41,
+   "nama_buku": "al-Malã’ikah",
+   "surah": 35
+  },
+  {
+   "no": 42,
+   "nama_buku": "Maryam",
+   "surah": 19
+  },
+  {
+   "no": 43,
+   "nama_buku": "Thã hã",
+   "surah": 20
+  },
+  {
+   "no": 44,
+   "nama_buku": "al-Syua‘rã’",
+   "surah": 26
+  },
+  {
+   "no": 45,
+   "nama_buku": "al-Naml",
+   "surah": 27
+  },
+  {
+   "no": 46,
+   "nama_buku": "al-Qashash",
+   "surah": 28
+  },
+  {
+   "no": 47,
+   "nama_buku": "Banî Isrã’îl",
+   "surah": 17
+  },
+  {
+   "no": 48,
+   "nama_buku": "Yûnus",
+   "surah": 10
+  },
+  {
+   "no": 49,
+   "nama_buku": "Hûd",
+   "surah": 11
+  },
+  {
+   "no": 50,
+   "nama_buku": "Yûsuf",
+   "surah": 12
+  },
+  {
+   "no": 51,
+   "nama_buku": "al-Hijr",
+   "surah": 15
+  },
+  {
+   "no": 52,
+   "nama_buku": "al-An‘ãm",
+   "surah": 6
+  },
+  {
+   "no": 53,
+   "nama_buku": "al-Shaffãt",
+   "surah": 37
+  },
+  {
+   "no": 54,
+   "nama_buku": "Luqmãn",
+   "surah": 31
+  },
+  {
+   "no": 55,
+   "nama_buku": "Saba’",
+   "surah": 34
+  },
+  {
+   "no": 56,
+   "nama_buku": "al-Zumar",
+   "surah": 39
+  },
+  {
+   "no": 57,
+   "nama_buku": "al-Mu’min",
+   "surah": 40
+  },
+  {
+   "no": 58,
+   "nama_buku": "Hã mîm al-Sajdah",
+   "surah": 41
+  },
+  {
+   "no": 59,
+   "nama_buku": "Hã mîm ‘ain sin qãf",
+   "surah": 42
+  },
+  {
+   "no": 60,
+   "nama_buku": "al-Zukhrûf",
+   "surah": 43
+  },
+  {
+   "no": 61,
+   "nama_buku": "al-Dukhãn",
+   "surah": 44
+  },
+  {
+   "no": 62,
+   "nama_buku": "al-Jãtsiyah",
+   "surah": 45
+  },
+  {
+   "no": 63,
+   "nama_buku": "al-Ahqãf",
+   "surah": 46
+  },
+  {
+   "no": 64,
+   "nama_buku": "al-Dzãriyãt",
+   "surah": 51
+  },
+  {
+   "no": 65,
+   "nama_buku": "al-Gãsyiyah",
+   "surah": 88
+  },
+  {
+   "no": 66,
+   "nama_buku": "al-Kahfi",
+   "surah": 18
+  },
+  {
+   "no": 67,
+   "nama_buku": "al-Nahl",
+   "surah": 16
+  },
+  {
+   "no": 68,
+   "nama_buku": "Nûh",
+   "surah": 71
+  },
+  {
+   "no": 69,
+   "nama_buku": "Ibrãhîm",
+   "surah": 14
+  },
+  {
+   "no": 70,
+   "nama_buku": "al-Anbiyã’",
+   "surah": 21
+  },
+  {
+   "no": 71,
+   "nama_buku": "al-Mu’minûn",
+   "surah": 23
+  },
+  {
+   "no": 72,
+   "nama_buku": "al-Ra‘d",
+   "surah": 13
+  },
+  {
+   "no": 73,
+   "nama_buku": "al-Thûr",
+   "surah": 52
+  },
+  {
+   "no": 74,
+   "nama_buku": "al-Mulk",
+   "surah": 67
+  },
+  {
+   "no": 75,
+   "nama_buku": "al-Hãqqah",
+   "surah": 69
+  },
+  {
+   "no": 76,
+   "nama_buku": "al-Ma‘ãrij",
+   "surah": 70
+  },
+  {
+   "no": 77,
+   "nama_buku": "al-Nisã’",
+   "surah": 78
+  },
+  {
+   "no": 78,
+   "nama_buku": "Wa-l-nãzi‘ãt",
+   "surah": 79
+  },
+  {
+   "no": 79,
+   "nama_buku": "al-Infithãr",
+   "surah": 82
+  },
+  {
+   "no": 80,
+   "nama_buku": "al-Insyiqãq",
+   "surah": 84
+  },
+  {
+   "no": 81,
+   "nama_buku": "al-Rûm",
+   "surah": 30
+  },
+  {
+   "no": 82,
+   "nama_buku": "al-‘Ankabût",
+   "surah": 29
+  },
+  {
+   "no": 83,
+   "nama_buku": "al-Muthaffifîn",
+   "surah": 83
+  },
+  {
+   "no": 84,
+   "nama_buku": "al-Baqarah",
+   "surah": 2
+  },
+  {
+   "no": 85,
+   "nama_buku": "al-Anfãl",
+   "surah": 8
+  },
+  {
+   "no": 86,
+   "nama_buku": "Ãli ‘Imrãn",
+   "surah": 3
+  },
+  {
+   "no": 87,
+   "nama_buku": "al-Hasyr",
+   "surah": 59
+  },
+  {
+   "no": 88,
+   "nama_buku": "al-Ahzãb",
+   "surah": 33
+  },
+  {
+   "no": 89,
+   "nama_buku": "al-Nûr",
+   "surah": 24
+  },
+  {
+   "no": 90,
+   "nama_buku": "al-Mumtahanah",
+   "surah": 60
+  },
+  {
+   "no": 91,
+   "nama_buku": "al-Fath",
+   "surah": 48
+  },
+  {
+   "no": 92,
+   "nama_buku": "al-Nisã’",
+   "surah": 4
+  },
+  {
+   "no": 93,
+   "nama_buku": "Idzã Zulzilat (al-Zalzalah)",
+   "surah": 99
+  },
+  {
+   "no": 94,
+   "nama_buku": "al-Hajj",
+   "surah": 22
+  },
+  {
+   "no": 95,
+   "nama_buku": "al-Hadîd",
+   "surah": 57
+  },
+  {
+   "no": 96,
+   "nama_buku": "Muhammad (saw.)",
+   "surah": 47
+  },
+  {
+   "no": 97,
+   "nama_buku": "al-Insãn",
+   "surah": 76
+  },
+  {
+   "no": 98,
+   "nama_buku": "al-Thalaq",
+   "surah": 65
+  },
+  {
+   "no": 99,
+   "nama_buku": "Lam Yakun",
+   "surah": 98
+  },
+  {
+   "no": 100,
+   "nama_buku": "al-Jumu‘ah",
+   "surah": 62
+  },
+  {
+   "no": 101,
+   "nama_buku": "Alîf lãm mîm al-Sajdah",
+   "surah": 32
+  },
+  {
+   "no": 102,
+   "nama_buku": "al-Munãfiqûn",
+   "surah": 63
+  },
+  {
+   "no": 103,
+   "nama_buku": "al-Mujãdilah",
+   "surah": 58
+  },
+  {
+   "no": 104,
+   "nama_buku": "al-Hujurãt",
+   "surah": 49
+  },
+  {
+   "no": 105,
+   "nama_buku": "al-Tahrîm",
+   "surah": 66
+  },
+  {
+   "no": 106,
+   "nama_buku": "al-Tagãbûn",
+   "surah": 64
+  },
+  {
+   "no": 107,
+   "nama_buku": "al-Shaff",
+   "surah": 61
+  },
+  {
+   "no": 108,
+   "nama_buku": "al-Mã’idah",
+   "surah": 5
+  },
+  {
+   "no": 109,
+   "nama_buku": "al-Tawbah",
+   "surah": 9
+  },
+  {
+   "no": 110,
+   "nama_buku": "al-Nashr",
+   "surah": 110
+  },
+  {
+   "no": 111,
+   "nama_buku": "al-Wãqi‘ah",
+   "surah": 56
+  },
+  {
+   "no": 112,
+   "nama_buku": "Wa-l-‘Ãdiyat",
+   "surah": 100
+  },
+  {
+   "no": 113,
+   "nama_buku": "al-Falaq",
+   "surah": 113
+  },
+  {
+   "no": 114,
+   "nama_buku": "al-Nãs",
+   "surah": 114
+  }
+ ]
+}

@@ -6,3 +6,6 @@ local.properties
 *.jks
 *.keystore
 keystore.properties
+*.pdf
+pipeline/Hasil/*
+!pipeline/Hasil/.gitkeep

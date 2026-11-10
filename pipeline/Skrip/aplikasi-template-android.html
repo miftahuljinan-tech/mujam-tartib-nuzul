@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>معجم ترتيب النزول</title>
+<style>
+:root{--bg:#faf7f0;--card:#fff;--ink:#222;--mut:#6b6b6b;--line:#e3dccb;--acc:#1f6f5c;--acc2:#e8f3ef;--mark:#ffe28a;--bar:#1f6f5c}
+@media (prefers-color-scheme:dark){:root{--bg:#16181a;--card:#202326;--ink:#e9e6df;--mut:#9aa0a3;--line:#33383c;--acc:#5cc2a6;--acc2:#1d3029;--mark:#6b5a12;--bar:#5cc2a6}}
+@font-face{font-family:'Amiri Quran';src:url(fonts/AmiriQuran-Regular.ttf) format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'Reem Kufi';src:url(fonts/ReemKufi.ttf) format('truetype');font-weight:400 700;font-display:swap}
+@font-face{font-family:'Montserrat';src:url(fonts/Montserrat.ttf) format('truetype');font-weight:100 900;font-display:swap}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px}
+h1{font-size:18px;margin:0 0 8px}
+main{padding:12px 16px 80px;max-width:760px;margin:0 auto}
+.ar{font-family:"Amiri Quran","Amiri","Scheherazade New","Noto Naskh Arabic","Traditional Arabic",serif;direction:rtl;text-align:right}
+.row{display:flex;gap:8px;align-items:center}
+input[type=text]{flex:1;font-size:22px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);min-width:0}
+button,select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+button.p{background:var(--acc);color:#fff;border-color:var(--acc)}
+button.on{background:var(--acc2);border-color:var(--acc);color:var(--acc)}
+.tabs{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}
+.mut{color:var(--mut);font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:15px}
+.chip.on{background:var(--acc2);border-color:var(--acc)}
+.chip{display:inline-flex;align-items:center;gap:6px}.chip .ar{font-size:20px;unicode-bidi:isolate}.chip .mut{unicode-bidi:isolate}
+.ay{font-size:26px;line-height:2.1}
+mark{background:var(--mark);color:inherit;border-radius:4px;padding:0 2px}
+.tr{margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);font-size:15px}
+.hd{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mut);flex-wrap:wrap}
+.ex{margin-top:6px;padding:6px 10px;border-radius:8px;background:var(--acc2);font-size:13px;line-height:1.5}.ex details{margin-top:2px}.ex summary{cursor:pointer;color:var(--acc);font-size:12px}.ex details div{margin-top:3px}.pill{background:var(--acc2);color:var(--acc);border-radius:999px;padding:1px 8px}
+.bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:14px}
+.bar .l{flex:0 0 120px}.bar .b{flex:1;background:var(--line);border-radius:6px;height:16px;overflow:hidden}
+.bar .b i{display:block;height:100%;background:var(--bar)}
+.kb{display:none;margin:8px 0;direction:rtl}
+.kb.show{display:block}
+.kb .kr{display:flex;gap:3px;justify-content:center;margin-bottom:4px;flex-wrap:nowrap}
+.kb button{font-size:21px;flex:1 1 0;min-width:0;padding:6px 0;font-family:"Amiri","Noto Naskh Arabic",serif}.kb button[data-k=" "]{flex:4 1 0;font-size:15px;font-family:inherit}.kb button[data-k="⌫"]{flex:2 1 0}
+#ver{width:100%;font-size:15px;text-overflow:ellipsis}.ctl .lb{font-size:13px;color:var(--mut);margin:0 0 4px}.ctl .seg,.ctl .acts{margin-top:10px}.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}.seg button{border:0;border-radius:0;padding:9px 6px;background:transparent;font-size:15px}.seg button+button{border-left:1px solid var(--line)}.seg button.on{background:var(--acc2);color:var(--acc);font-weight:600}.acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.acts button{padding:9px 4px;font-size:14px;white-space:nowrap;min-width:0}.ctl .cnt{margin-top:12px}
+.chip{direction:ltr}
+.note{background:var(--acc2);border-radius:10px;padding:8px 12px;font-size:14px}
+a{color:var(--acc)}
+.ttl{position:relative;display:block;text-align:center;margin:0 0 10px;padding:0 44px}
+.ttl-ar{font-family:"Reem Kufi","Amiri Quran","Amiri",serif;font-size:30px;line-height:1.45;font-weight:600;color:var(--acc);text-align:center}
+.ttl-ln{width:96px;height:2px;background:#c9a24a;margin:2px auto 6px;border-radius:2px}
+.ttl-sub{font:500 10.5px/1.5 Montserrat,system-ui,sans-serif;letter-spacing:1.8px;text-transform:uppercase;color:var(--mut);text-wrap:balance}
+#info{position:absolute;right:-6px;top:0;font-size:20px;line-height:1;padding:6px 10px;border-radius:999px;color:var(--acc)}
+.fold{border-top:1px solid var(--line);margin-top:8px;padding-top:2px}
+.fold summary{cursor:pointer;color:var(--acc);font-weight:600;padding:8px 0}
+.fold .fb{font-size:14px;line-height:1.6;padding:0 0 6px}
+.fold .lic{white-space:pre-wrap;font:11px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--acc2);border-radius:8px;padding:8px 10px;margin:6px 0 12px;overflow-wrap:anywhere}.fold .fb ul,.fold .fb ol{margin:4px 0;padding-left:20px}.fold .fb li{margin:3px 0}
+.qw{position:relative;flex:1;min-width:0}.qw input{width:100%}
+.sg{position:absolute;left:0;right:0;top:100%;margin-top:4px;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.18);z-index:20;overflow:hidden;direction:rtl}
+.sg div{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+.sg div:last-child{border-bottom:0}.sg div:active{background:var(--acc2)}
+.sg .ar{font-size:22px}.sg small{color:var(--mut);font-size:12px;direction:ltr;white-space:nowrap}
+.chip{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.orn{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%231f6f5c' stroke-opacity='.10' stroke-width='1.1'%3E%3Crect x='18' y='18' width='36' height='36'/%3E%3Crect x='18' y='18' width='36' height='36' transform='rotate(45 36 36)'/%3E%3Ccircle cx='36' cy='36' r='9'/%3E%3Ccircle cx='0' cy='0' r='9'/%3E%3Ccircle cx='72' cy='0' r='9'/%3E%3Ccircle cx='0' cy='72' r='9'/%3E%3Ccircle cx='72' cy='72' r='9'/%3E%3C/g%3E%3C/svg%3E");background-size:72px 72px}
+@media (prefers-color-scheme:dark){.orn{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%235cc2a6' stroke-opacity='.10' stroke-width='1.1'%3E%3Crect x='18' y='18' width='36' height='36'/%3E%3Crect x='18' y='18' width='36' height='36' transform='rotate(45 36 36)'/%3E%3Ccircle cx='36' cy='36' r='9'/%3E%3Ccircle cx='0' cy='0' r='9'/%3E%3Ccircle cx='72' cy='0' r='9'/%3E%3Ccircle cx='0' cy='72' r='9'/%3E%3Ccircle cx='72' cy='72' r='9'/%3E%3C/g%3E%3C/svg%3E")}}
+.act{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}.act button{font-size:13px;padding:4px 10px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:14px;z-index:50;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.on{opacity:.95}
+.kt{font-size:17px;font-weight:600}.kw{font-size:30px;font-weight:700;color:var(--acc);unicode-bidi:isolate;line-height:1.4}
+.hr{border:0;border-top:1px solid var(--line);margin:10px 0}
+.btns{display:flex;gap:8px;flex-wrap:wrap}.btns button{font-size:13px;padding:6px 8px;flex:1 1 auto;white-space:nowrap}
+#mdl{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:flex;align-items:center;justify-content:center;padding:16px}
+#mdl[hidden]{display:none}
+.mbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;width:100%;max-width:420px;max-height:80vh;overflow:auto}
+.mbox input.nm{width:100%;font-size:16px;margin-top:8px;direction:ltr;text-align:left;font-family:inherit}
+.mlist{display:flex;flex-direction:column;gap:6px;margin-top:8px}.mlist button{text-align:left}
+.nt textarea{width:100%;margin-top:6px;font:inherit;font-size:15px;padding:8px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);resize:vertical}
+</style>
+</head>
+<body>
+<header>
+  <div class="ttl"><div class="ar ttl-ar">معجم ترتيب النزول</div><div class="ttl-ln"></div><div class="ttl-sub">Kosakata al-Qur'an menurut Tartib Nuzul</div><button id="info" aria-label="Tentang aplikasi">ⓘ</button></div>
+  <div class="row">
+    <div class="qw"><input id="q" type="text" class="ar" dir="rtl" placeholder="اكتب جذرًا أو كلمة" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text"><div id="sg" class="sg" hidden></div></div>
+    <button class="p" id="go">Cari</button>
+    <button id="kbt" title="Papan ketik Arab">⌨</button>
+  </div>
+  <div class="kb" id="kb"></div>
+</header>
+<main id="app"></main>
+<div id="mdl" hidden><div id="mbox" class="mbox"></div></div>
+<div id="toast"></div>
+
+<script>
+const DATA=/*DATA_DISINI*/null;
+
+/* ===== normalisasi (harus sama dengan skrip Python) ===== */
+function norm(s){
+  s=s.normalize("NFC");let o="";
+  for(const ch of s){
+    const c=ch.codePointAt(0);
+    if((c>=0x064B&&c<=0x065F)||c===0x0670||c===0x0640||(c>=0x06D6&&c<=0x06EE)||c===0x08F0||c===0x08F1||c===0x08F2)continue;
+    if("أإآٱ".includes(ch))o+="ا";
+    else if(ch==="ى")o+="ي";
+    else if(ch==="ة")o+="ه";
+    else o+=ch;
+  }
+  return o;
+}
+const key=s=>norm(s).replace(/[ؤئ]/g,"ء");
+
+/* ===== indeks ===== */
+const A=DATA.ayah, S=DATA.surah, V=DATA.versi;
+const rootKey=DATA.roots.map(key);
+const rootIdx=new Map(), formIdx=new Map(), rootPost=DATA.roots.map(()=>[]);
+const surfaceOf=new Map();
+A.forEach((a,ai)=>{
+  a[5].forEach((w,wi)=>{
+    const ks=[];
+    [w[0],w[0].replace(/\u0670/g,"ا")].forEach(tx=>{   // ejaan imla'i: alif khanjariyah dibaca alif
+      const k=key(tx);ks.push(k);
+      if(tx.includes(" "))ks.push(k.replace(/ /g,""),...tx.split(" ").map(key));
+    });
+    new Set(ks).forEach(kk=>{if(!formIdx.has(kk))formIdx.set(kk,[]);formIdx.get(kk).push([ai,wi])});
+    if(w[1]>=0)rootPost[w[1]].push([ai,wi]);
+  });
+});
+rootKey.forEach((k,i)=>{if(!rootIdx.has(k))rootIdx.set(k,[]);rootIdx.get(k).push(i)});
+const ayahAt=new Map(A.map((a,i)=>[a[0]+":"+a[1],i]));
+
+/* ===== tartib ===== */
+function posOf(v,s,n){
+  const ver=V[v];
+  for(const g of ver.seg)if(g[0]===s&&n>=g[1]&&n<=g[2])return g[3];
+  const p=ver.pos[s];
+  return p?p[0]:null;
+}
+function periodOf(v,s){const p=V[v].pos[s];return p?(p[1]||"tanpa klasifikasi periode"):"tidak ada dalam daftar"}
+/* pengecualian periode tingkat ayat (per versi); hanya status "pasti" mengubah periode ayat */
+const EX=V.map(v=>{const m=new Map();(v.ex||[]).forEach(r=>{for(let n=r[1];n<=r[2];n++){const k=r[0]+":"+n;const o=m.get(k);if(!o||(o[4]!=="pasti"&&r[4]==="pasti"))m.set(k,r)}});return m});
+function exOf(v,s,n){return EX[v].get(s+":"+n)||null}
+function periodAy(v,s,n){const r=exOf(v,s,n);return r&&r[4]==="pasti"?r[3]:periodOf(v,s)}
+function exLine(v,s,n){const r=exOf(v,s,n);if(!r)return"";
+  const sp=periodOf(v,s);let h,d="";
+  if(r[4]==="pasti")h=`<b>${esc(r[3])}</b> <span class="mut">(surah: ${esc(sp)})</span>`;
+  else if(r[4]==="tidak_pasti"){h=`Mungkin <b>${esc(r[3])}</b> <span class="mut">(tidak pasti)</span>`;d=`Penyaringan dan statistik tetap memakai periode surah (${esc(sp)}). `}
+  else h=`<b>Lebih akhir dari surahnya</b> <span class="mut">(periode tidak ditentukan)</span>`;
+  const det=d+(r[5]?esc(r[5])+" ":"")+`<span class="mut">Sumber: ${esc(V[v].exsrc)}</span>`;
+  return `<div class="ex">⚑ ${h}<details><summary>detail</summary><div>${det}</div></details></div>`}
+function orderKey(v,s,n){const p=posOf(v,s,n);return (p===null?9999:p)*1000+n/1000}
+
+/* ===== penyimpanan (tema & catatan) ===== */
+const mem={};let storeOK=true;
+function sget(k,def){try{const x=localStorage.getItem(k);return x===null?(mem[k]!==undefined?mem[k]:def):JSON.parse(x)}catch(e){storeOK=false;return mem[k]!==undefined?mem[k]:def}}
+function sset(k,v){mem[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){storeOK=false}}
+try{localStorage.setItem("mn_t","1");localStorage.removeItem("mn_t")}catch(e){storeOK=false}
+let TEMA=sget("mn_tema",[]),CAT=sget("mn_cat",{});
+if(!Array.isArray(TEMA))TEMA=[];if(typeof CAT!=="object"||!CAT)CAT={};
+const saveTema=()=>sset("mn_tema",TEMA),saveCat=()=>sset("mn_cat",CAT);
+
+/* ===== keadaan ===== */
+const st={q:"",mode:null,rootId:null,forms:null,terms:null,post:null,cand:null,temaId:null,v:0,urut:"nuzul",tr:false,shown:50,tab:"hasil",per:null};
+try{const x=localStorage.getItem("mn_v2");if(x!==null&&V[+x])st.v=+x}catch(e){}
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const akey=ai=>A[ai][0]+":"+A[ai][1];
+
+/* ===== papan ketik ===== */
+const KB=["ضصثقفغعهخحجدذ","شسيبلاتنمكط","ئءؤرىةوزظ"];
+(function(){
+  const kb=$("kb");
+  kb.innerHTML=KB.map(r=>'<div class="kr">'+[...r].map(c=>`<button data-k="${c}">${c}</button>`).join("")+"</div>").join("")+
+   '<div class="kr"><button data-k="+">+</button><button data-k=" ">spasi</button><button data-k="⌫">⌫</button></div>';
+  kb.addEventListener("click",e=>{
+    const b=e.target.closest("button");if(!b)return;const k=b.dataset.k,q=$("q");
+    if(k==="⌫")q.value=q.value.slice(0,-1);else q.value+=k;q.focus();showSg();
+  });
+  $("kbt").onclick=()=>kb.classList.toggle("show");
+})();
+
+/* ===== pencarian ===== */
+function resolveTerm(t,force){
+  const k=key(t.replace(/\s+/g,""));
+  const rid=rootIdx.get(k)||[];
+  const fm=new Map();
+  [k,"ال"+k].forEach(kk=>{if(formIdx.has(kk))fm.set(kk,formIdx.get(kk))});
+  const seen=new Set();
+  const forms=[...fm.values()].flat().filter(x=>{const z=x[0]+":"+x[1];if(seen.has(z))return false;seen.add(z);return true});
+  const cand={roots:rid,forms,formKeys:[...fm.keys()]};
+  if(rid.length&&force!=="kata")return{type:"akar",label:DATA.roots[rid[0]],post:rootPost[rid[0]],rootId:rid[0],cand};
+  if(forms.length)return{type:"kata",label:t,post:forms,cand};
+  return null;
+}
+function gabung(ts){
+  let common=null;
+  ts.forEach(x=>{const s=new Set(x.post.map(y=>y[0]));common=common?new Set([...common].filter(y=>s.has(y))):s});
+  return ts.flatMap(x=>x.post.filter(y=>common.has(y[0])));
+}
+const splitQ=raw=>raw.split(/[+＋]/).map(s=>s.trim()).filter(Boolean).slice(0,3);
+function doSearch(force){
+  const raw=$("q").value.trim();st.q=raw;st.shown=50;st.tab="hasil";st.per=null;hideSg();
+  if(!raw){st.mode=null;render();return}
+  const parts=splitQ(raw);
+  if(parts.length>=2){
+    const ts=parts.map(p=>resolveTerm(p));
+    const miss=ts.map((x,i)=>x?null:parts[i]).filter(Boolean);
+    if(miss.length){st.mode="kosong";st.miss=miss;render();return}
+    st.mode="gabung";st.terms=ts;st.post=gabung(ts);st.cand=null;render();return;
+  }
+  const r=resolveTerm(parts[0],force);st.miss=null;
+  if(!r){st.mode="kosong";render();return}
+  st.cand=r.cand;
+  if(r.type==="akar")selectRoot(r.rootId,false);else{st.mode="kata";st.rootId=null;st.forms=null}
+  render();
+}
+function selectRoot(id,rend=true){
+  st.mode="akar";st.rootId=id;
+  const set=new Set();rootPost[id].forEach(([ai,wi])=>set.add(key(A[ai][5][wi][0])));
+  st.forms=set;if(rend)render();
+}
+/* hasil dari satu kueri tersimpan pada tema */
+function queryHits(q){
+  const parts=splitQ(q.q);
+  if(parts.length>=2){const ts=parts.map(p=>resolveTerm(p));if(ts.some(x=>!x))return[];return gabung(ts)}
+  const r=resolveTerm(parts[0]||"",q.m==="kata"?"kata":undefined);if(!r)return[];
+  if(r.type==="akar"&&q.f)return r.post.filter(([ai,wi])=>q.f.includes(key(A[ai][5][wi][0])));
+  return r.post;
+}
+function temaNow(){return TEMA.find(x=>x.id===st.temaId)}
+function baseHits(){
+  if(st.mode==="akar")return rootPost[st.rootId].filter(([ai,wi])=>st.forms.has(key(A[ai][5][wi][0])));
+  if(st.mode==="kata")return st.cand.forms;
+  if(st.mode==="gabung")return st.post;
+  if(st.mode==="tema"){const t=temaNow();if(!t)return[];
+    const h=t.queries.flatMap(queryHits);
+    t.ayat.forEach(k=>{const ai=ayahAt.get(k);if(ai!==undefined)h.push([ai,-1])});return h}
+  if(st.mode==="catatan")return Object.keys(CAT).filter(k=>ayahAt.has(k)&&CAT[k]).map(k=>[ayahAt.get(k),-1]);
+  return [];
+}
+function hits(){
+  let h=baseHits();
+  if(st.per&&st.per.size)h=h.filter(([ai])=>st.per.has(periodAy(st.v,A[ai][0],A[ai][1])));
+  return h;
+}
+function groupHits(h){
+  const m=new Map();
+  h.forEach(([ai,wi])=>{if(!m.has(ai))m.set(ai,new Set());m.get(ai).add(wi)});
+  let list=[...m.entries()].map(([ai,ws])=>({ai,ws,s:A[ai][0],n:A[ai][1]}));
+  if(st.urut==="nuzul")list.sort((x,y)=>orderKey(st.v,x.s,x.n)-orderKey(st.v,y.s,y.n));
+  else list.sort((x,y)=>x.s-y.s||x.n-y.n);
+  return list;
+}
+function judulHasil(){
+  if(st.mode==="akar")return "akar "+DATA.roots[st.rootId];
+  if(st.mode==="gabung")return st.terms.map(t=>t.label).join(" + ");
+  if(st.mode==="tema"){const t=temaNow();return "tema "+(t?t.nama:"")}
+  if(st.mode==="catatan")return "catatan saya";
+  return "kata "+st.q;
+}
+
+/* ===== tampilan ===== */
+function formChips(){
+  const cnt=new Map(),surf=new Map();
+  rootPost[st.rootId].forEach(([ai,wi])=>{
+    const w=A[ai][5][wi][0],k=key(w);cnt.set(k,(cnt.get(k)||0)+1);
+    if(!surf.has(k))surf.set(k,{});surf.get(k)[w]=(surf.get(k)[w]||0)+1;
+  });
+  const arr=[...cnt.entries()].sort((a,b)=>b[1]-a[1]);
+  return arr.map(([k,c])=>{
+    const best=Object.entries(surf.get(k)).sort((a,b)=>b[1]-a[1])[0][0];
+    return `<span class="chip ${st.forms.has(k)?"on":""}" data-f="${esc(k)}"><span class="ar">${esc(best)}</span> <span class="mut">${c}×</span></span>`;
+  }).join("");
+}
+function ayahCard(g){
+  const a=A[g.ai],p=posOf(st.v,g.s,g.n),per=periodAy(st.v,g.s,g.n),ak=akey(g.ai);
+  const urut=p===null?"—":(Number.isInteger(p)?"ke-"+p:"disisipkan setelah ke-"+Math.floor(p));
+  const cat=(V[st.v].pos[g.s]||[0,0,""])[2];
+  let ar;
+  if(a[4])ar=esc(a[2])+' <span class="mut">(sorotan kata tidak tersedia untuk ayat ini)</span>';
+  else ar=a[5].map((w,i)=>g.ws.has(i)?"<mark>"+esc(w[0])+"</mark>":esc(w[0])).join(" ");
+  const note=CAT[ak]||"";
+  const man=st.mode==="tema"&&(temaNow()?.ayat||[]).includes(ak);
+  return `<div class="card" data-ai="${g.ai}">
+   <div class="hd"><span><b>${esc(S[g.s-1][1])}</b> (${g.s}):${g.n}</span><span><span class="pill">${esc(per)}</span> Nuzul ${urut} · Mushaf ke-${g.s}</span></div>
+   <div class="ay ar">${ar}</div>
+   ${cat?`<div class="mut">Catatan versi: ${esc(cat)}</div>`:""}
+   ${exLine(st.v,g.s,g.n)}
+   <div class="tr" ${st.tr?"":'hidden'}>${esc(a[3])}</div>
+   <div class="nt" ${note?"":"hidden"}><textarea placeholder="Catatan Anda untuk ayat ini…" rows="3">${esc(note)}</textarea></div>
+   <div class="act">${st.tr?"":'<button class="trb">Lihat terjemah</button>'}<button class="cpy">Salin</button><button class="kut">Kutip</button><button class="ntb ${note?"on":""}">Catatan${note?" ✓":""}</button><button class="addt">+ Tema</button>${man?'<button class="rmt">Keluarkan dari tema</button>':""}</div>
+  </div>`;
+}
+function statsHtml(list,h){
+  const byAy=new Map();h.forEach(([ai])=>byAy.set(ai,(byAy.get(ai)||0)+1));
+  const per=new Map();
+  byAy.forEach((c,ai)=>{const s=A[ai][0],n=A[ai][1];const lab=periodAy(st.v,s,n);
+    const o=posOf(st.v,s,n)??9999;
+    if(!per.has(lab))per.set(lab,{c:0,o:o});const e=per.get(lab);e.c+=c;e.o=Math.min(e.o,o)});
+  const rows=[...per.entries()].sort((a,b)=>a[1].o-b[1].o);
+  const max=Math.max(...rows.map(r=>r[1].c));
+  return `<div class="card"><b>Kemunculan per periode</b> <span class="mut">— ${esc(V[st.v].nama)}</span>
+   ${rows.map(([l,e])=>`<div class="bar"><span class="l">${esc(l)}</span><span class="b"><i style="width:${e.c/max*100}%"></i></span><b>${e.c}</b></div>`).join("")}
+   <div class="mut">Jumlah kata yang cocok, bukan jumlah ayat (ayat yang ditambahkan manual atau dari catatan dihitung satu). Istilah periode mengikuti versi yang dipilih, sehingga antarversi tidak sebanding satu lawan satu. Urutan periode mengikuti urutan nuzul versi tersebut.</div></div>`;
+}
+function periodChips(){
+  const base=baseHits();const cnt=new Map();
+  new Set(base.map(x=>x[0])).forEach(ai=>{
+    const s=A[ai][0],n=A[ai][1],lab=periodAy(st.v,s,n),o=posOf(st.v,s,n)??9999;
+    if(!cnt.has(lab))cnt.set(lab,{c:0,o});const e=cnt.get(lab);e.c++;e.o=Math.min(e.o,o);
+  });
+  const labs=[...cnt.entries()].sort((a,b)=>a[1].o-b[1].o);
+  if(labs.length===1&&labs[0][0]==="tanpa klasifikasi periode")return '<div class="mut" style="margin-top:6px">Versi ini tidak mengklasifikasikan periode, jadi filter periode tidak tersedia.</div>';
+  if(labs.length<2)return "";
+  return `<div class="mut" style="margin-top:8px">Periode (ketuk untuk menyaring):</div><div class="chips">${labs.map(([l,e])=>`<span class="chip ${st.per&&st.per.has(l)?"on":""}" data-p="${esc(l)}">${esc(l)} <span class="mut">${e.c}</span></span>`).join("")}</div>`;
+}
+function about(){
+  const m=DATA.meta;
+  const sec=(t,b)=>`<details class="fold"><summary>${t}</summary><div class="fb">${b}</div></details>`;
+  const metod=`<ol>
+   <li>Akar kata berasal dari Quranic Arabic Corpus.</li>
+   <li>Bukan dari Mu'jam Mufahras (Fu'ad Abd al-Baqi); pengelompokan akar pada sebagian kata bisa berbeda.</li>
+   <li>Tartib nuzul tidak tunggal: pilih versi di layar hasil.</li>
+   <li>Tartib dihitung per surah (kecuali segmen khusus pada versi al-Jabiri).</li></ol>`;
+  const versi=`<ul>
+   <li><b>Mushaf Kairo 1924</b>: edisi standar Mesir (Raja Fu'ad).</li>
+   <li><b>Riwayat klasik (Ibn ʿAbbas)</b>: al-Fatihah tidak tercantum.</li>
+   <li><b>Mushaf Ibn ʿAbbas (al-Syahrastani)</b>: susunan mushaf, al-Fatihah urutan ke-6, tanpa klasifikasi periode.</li>
+   <li><b>al-Jabiri</b>: surah 96 dan 74 dipecah per ayat; sisipan ditampilkan sebagai “setelah ke-n”.</li>
+   <li><b>Nöldeke–Schwally</b>: periode Makkah (awal, tengah, akhir) dan Madinah menurut <i>Geschichte des Qorans</i>; pengecualian ayat dipetakan dari penomoran Flügel ke Kairo.</li>
+   <li><b>Darwazah</b>: urutan nuzul menurut Darwazah dalam <i>at-Tafsir al-Hadits</i>; pengecualian ayat berdasarkan penilaiannya sendiri.</li></ul>`;
+  const exc=`<p>Ayat yang periodenya menyimpang dari periode surahnya ditandai ⚑ pada kartu ayat. Hanya yang berstatus <i>pasti</i> ikut menentukan penyaringan dan statistik.</p><ul>
+   ${V.map(v=>DATA.meta["pengecualian_"+v.kode]?`<li><b>${esc(v.nama)}</b>: ${esc(DATA.meta["pengecualian_"+v.kode])}</li>`:"").join("")}</ul>`;
+  const sumber=`<ul>
+   <li>Teks al-Qur'an: <a href="http://tanzil.net">Tanzil</a> (Utsmani, tanpa perubahan).</li>
+   <li>Terjemah: Kementerian Agama RI 2010, melalui Tanzil.</li>
+   <li>Akar dan morfologi: <a href="http://corpus.quran.com">Quranic Arabic Corpus</a> (Kais Dukes, University of Leeds).</li>
+   <li>Font: Amiri Quran, Reem Kufi, Montserrat (SIL Open Font License).</li></ul>`;
+  const lis=`<p><b>Mu'jam Tartib Nuzul</b>, hak cipta © 2026 Miftahul Janah. Kode: GNU General Public License v3 atau yang lebih baru. Data tartib dan pengecualian ayat buatan pengembang: CC BY-SA 4.0. Kode sumber dan data: <a href="https://github.com/miftahuljinan-tech/mujam-tartib-nuzul">github.com/miftahuljinan-tech/mujam-tartib-nuzul</a>.</p>
+   <p>Komponen pihak ketiga tetap di bawah ketentuannya sendiri. Blok hak cipta berikut disalin dari berkas aslinya.</p>
+   <p><b>Teks al-Qur'an</b> (<a href="http://tanzil.net">tanzil.net</a>)</p><div class="lic">${esc(LIC_TZ)}</div>
+   <p><b>Anotasi morfologi</b> (<a href="http://corpus.quran.com">corpus.quran.com</a>)</p><div class="lic">${esc(LIC_QA)}</div>
+   <p><b>Terjemah</b></p><div class="lic">${esc(LIC_KM)}</div>
+   <p><b>Font</b>: Amiri Quran, Reem Kufi, Montserrat, SIL Open Font License 1.1.</p>`;
+  const kutip=`<p>Cara mengutip aplikasi ini:</p><p class="note"><b>APA</b><br>${esc(kutipApp("apa"))}</p><p class="note"><b>Chicago</b><br>${esc(kutipApp("chicago"))}</p>
+   <div class="acts" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button id="kapa">Salin APA</button><button id="kchi">Salin Chicago</button><button id="kris">Unduh RIS</button><button id="kbib">Unduh BibTeX</button></div>
+   <p class="mut" style="margin-top:8px">Berkas RIS dan BibTeX bisa diimpor ke Mendeley atau Zotero. DOI akan ditambahkan setelah rilis publik.</p>`;
+  const simpan=`<p>Tema dan catatan hanya disimpan di HP ini. Gunakan <i>Cadangkan</i> di tab Tema secara berkala.</p>`;
+  return `<div class="card"><b>Tentang aplikasi</b>
+  <p>Alat bantu penelitian tafsir maudhu'i: cari kata atau akar, lihat hasilnya menurut tartib mushaf atau tartib nuzul.</p>
+  <p class="mut">Pengembang: Miftahul Janah · Versi ${APPV}</p>
+  ${sec("Catatan metodologis",metod)}${sec("Catatan per versi",versi)}${sec("Pengecualian ayat (⚑)",exc)}${sec("Sumber data",sumber)}${sec("Lisensi dan hak cipta",lis)}${sec("Kutip aplikasi ini",kutip)}${sec("Penyimpanan data",simpan)}</div>`;
+}
+function temaTab(){
+  const nCat=Object.keys(CAT).filter(k=>CAT[k]).length;
+  const warn=storeOK?"":'<div class="note" style="margin-bottom:8px">Penyimpanan browser tidak tersedia di sini: tema dan catatan hanya bertahan selama halaman ini terbuka. Gunakan <b>Cadangkan</b> sebelum menutupnya.</div>';
+  return `<div class="card">${warn}<b>Koleksi tematik</b>
+   <div class="mut">Kumpulkan akar, kata, atau ayat pilihan Anda dalam satu tema, lalu lihat semuanya dalam satu garis waktu nuzul.</div>
+   <div class="btns" style="margin-top:8px"><button id="tbaru" class="p">+ Tema baru</button><button id="lcat">Catatan saya (${nCat})</button></div></div>
+   ${TEMA.length?TEMA.map(t=>`<div class="card" data-tid="${t.id}"><b>${esc(t.nama)}</b>
+     <div class="mut">${t.queries.length} pencarian · ${t.ayat.length} ayat manual</div>
+     <div class="btns" style="margin-top:8px"><button class="topen">Buka</button><button class="tren">Ganti nama</button><button class="tdel">Hapus</button></div></div>`).join(""):'<div class="card mut">Belum ada tema. Cari sebuah akar, lalu tekan “Simpan ke tema”.</div>'}
+   <div class="card"><b>Cadangan</b>
+    <div class="mut">Simpan semua tema dan catatan ke satu berkas, atau pulihkan dari berkas cadangan.</div>
+    <div class="btns" style="margin-top:8px"><button id="bak">Cadangkan (unduh)</button><button id="res">Pulihkan dari berkas</button></div>
+    <input type="file" id="resf" accept=".json,application/json" hidden></div>`;
+}
+function render(){
+  const app=$("app");
+  const tabs=`<div class="tabs"><button data-t="hasil" class="${st.tab==="hasil"?"on":""}">Hasil</button><button data-t="stat" class="${st.tab==="stat"?"on":""}">Statistik</button><button data-t="tema" class="${st.tab==="tema"?"on":""}">Tema</button></div>`;
+  if(st.tab==="about"){app.innerHTML='<div class="tabs"><button data-t="hasil">← Kembali</button></div>'+about();return}
+  if(st.tab==="tema"){app.innerHTML=tabs+temaTab();return}
+  if(!st.mode){app.innerHTML=tabs+`<div class="card">Ketik <b>akar</b> (mis. <span class="ar">جهد</span>) atau <b>bentuk kata</b> (mis. <span class="ar">جاهدوا</span>) lalu tekan Cari. Harakat diabaikan. Untuk akar, hasilnya mencakup semua turunan; Anda bisa memilih bentuk tertentu saja.<div class="mut" style="margin-top:6px">Untuk <b>dua akar sekaligus</b>, pisahkan dengan tanda <b>+</b>, mis. <span class="ar">ظلم + عدل</span>: yang tampil hanya ayat yang memuat keduanya.</div></div>`;return}
+  if(st.mode==="kosong"){app.innerHTML=tabs+`<div class="card">${st.miss?`Tidak ditemukan: ${st.miss.map(x=>"“"+esc(x)+"”").join(", ")}.`:`Tidak ada akar atau kata yang cocok dengan “${esc(st.q)}”.`} Coba tulis akar tiga huruf, atau bentuk kata tanpa awalan/akhiran. Kata yang mengandung hamzah di atas kursi bisa tertulis berbeda; untuk itu cari lewat akarnya.</div>`;return}
+  const h=hits(),list=groupHits(h);
+  let top="";
+  if(st.mode==="akar"){
+    const nAyat=new Set(rootPost[st.rootId].map(x=>x[0])).size;
+    top=`<div class="card orn"><div class="kt">Akar “<span class="ar kw" dir="rtl">${esc(DATA.roots[st.rootId])}</span>”</div>
+     <div class="mut">${rootPost[st.rootId].length} kata dalam al-Qur'an · ${nAyat} ayat</div>
+     <hr class="hr">
+     <div class="btns">${st.cand&&st.cand.forms.length?'<button id="tokata">Lihat sebagai kata</button>':""}<button id="all">Pilih semua</button><button id="none">Kosongkan semua</button></div>
+     <div class="btns" style="margin-top:8px"><button id="plus">+ Akar kedua</button><button id="simt" class="p">Simpan ke tema</button></div>
+     <div class="mut" style="margin-top:10px">Bentuk turunan. Ketuk untuk memilih/membatalkan; <b>tekan-tahan</b> untuk memilih hanya satu bentuk.</div>
+     <div class="chips" id="chips">${formChips()}</div></div>`;
+  }else if(st.mode==="kata"){
+    const nAyat=new Set(baseHits().map(x=>x[0])).size;
+    top=`<div class="card orn"><div class="kt">Kata “<span class="ar kw" dir="rtl">${esc(st.q)}</span>”</div>
+     <div class="mut">${baseHits().length} kemunculan · ${nAyat} ayat</div>
+     <hr class="hr"><div class="btns">${st.cand.roots.length?'<button id="toakar">Lihat sebagai akar</button>':""}<button id="plus">+ Akar kedua</button><button id="simt" class="p">Simpan ke tema</button></div></div>`;
+  }else if(st.mode==="gabung"){
+    const nA=new Set(st.post.map(x=>x[0])).size;
+    top=`<div class="card orn"><div class="kt">${st.terms.map(t=>`${t.type==="akar"?"Akar":"Kata"} “<span class="ar kw" dir="rtl">${esc(t.label)}</span>”`).join(" + ")}</div>
+     <div class="mut">${nA} ayat memuat semuanya · ${st.terms.map(t=>`${esc(t.label)}: ${new Set(t.post.map(x=>x[0])).size} ayat sendiri`).join("; ")}</div>
+     <hr class="hr"><div class="btns"><button id="plus">+ Tambah akar</button><button id="simt" class="p">Simpan ke tema</button></div>
+     ${nA?"":'<div class="mut" style="margin-top:8px">Tidak ada ayat yang memuat semua istilah itu sekaligus.</div>'}</div>`;
+  }else if(st.mode==="tema"){
+    const t=temaNow();
+    top=t?`<div class="card orn"><div class="kt">Tema “${esc(t.nama)}”</div>
+     <div class="mut">${t.queries.length} pencarian · ${t.ayat.length} ayat manual</div>
+     ${t.queries.length?`<div class="chips">${t.queries.map((q,i)=>`<span class="chip" data-rq="${i}"><span class="ar">${esc(splitQ(q.q).join(" + "))}</span> <span class="mut">✕</span></span>`).join("")}</div>`:""}
+     <hr class="hr"><div class="btns"><button id="tback">← Daftar tema</button><button id="tren2">Ganti nama</button></div></div>`:'<div class="card">Tema tidak ditemukan.</div>';
+  }else if(st.mode==="catatan"){
+    top=`<div class="card orn"><div class="kt">Catatan saya</div><div class="mut">${list.length} ayat bercatatan</div><hr class="hr"><div class="btns"><button id="tback">← Daftar tema</button></div></div>`;
+  }
+  const ctl=`<div class="card ctl"><div class="lb">Versi tartib</div>
+    <select id="ver">${V.map((v,i)=>`<option value="${i}" ${i===st.v?"selected":""}>${esc(namaPendek(v))}</option>`).join("")}</select>
+    <div class="seg"><button data-u="nuzul" class="${st.urut==="nuzul"?"on":""}">Urut nuzul</button><button data-u="mushaf" class="${st.urut==="mushaf"?"on":""}">Urut mushaf</button></div>
+    <div class="acts"><button id="trall" class="${st.tr?"on":""}">Terjemah</button><button id="cpall">Salin semua</button><button id="csv">Ekspor CSV</button></div>
+    <div class="mut cnt">${list.length} ayat · ${h.length} kemunculan</div>${periodChips()}</div>`;
+  let body;
+  if(st.tab==="stat")body=h.length?statsHtml(list,h):"";
+  else body=list.slice(0,st.shown).map(ayahCard).join("")+(list.length>st.shown?`<button id="more" class="p" style="width:100%">Tampilkan lagi (${list.length-st.shown})</button>`:"");
+  app.innerHTML=tabs+top+ctl+body;
+}
+
+/* ===== jendela (modal) ===== */
+let mcb=null;
+function openModal(html,cb){$("mbox").innerHTML=html;mcb=cb||null;$("mdl").hidden=false}
+function closeModal(){$("mdl").hidden=true;$("mbox").innerHTML="";mcb=null}
+function askConfirm(text,fn){openModal(`<p>${esc(text)}</p><div class="btns"><button id="mno">Batal</button><button id="myes" class="p">Ya</button></div>`,{type:"confirm",fn})}
+function askName(title,val,fn){openModal(`<b>${esc(title)}</b><input type="text" id="mname" class="nm" value="${esc(val||"")}" placeholder="Nama tema" maxlength="60"><div class="btns" style="margin-top:10px"><button id="mno">Batal</button><button id="myes" class="p">Simpan</button></div>`,{type:"name",fn});setTimeout(()=>{const i=$("mname");if(i){i.focus();i.select()}},30)}
+function pickTema(title,onPick){
+  openModal(`<b>${esc(title)}</b>
+   ${TEMA.length?`<div class="mlist">${TEMA.map(t=>`<button data-pick="${t.id}">${esc(t.nama)}</button>`).join("")}</div>`:'<div class="mut" style="margin:8px 0">Belum ada tema. Buat yang baru di bawah.</div>'}
+   <div class="mut" style="margin-top:8px">Atau buat tema baru:</div>
+   <input type="text" id="mname" class="nm" placeholder="Nama tema baru" maxlength="60">
+   <div class="btns" style="margin-top:10px"><button id="mno">Batal</button><button id="mnew" class="p">Buat dan simpan</button></div>`,{type:"pick",onPick});
+}
+const newTema=nama=>{const t={id:"t"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),nama:nama.trim(),queries:[],ayat:[]};TEMA.push(t);return t};
+function simpanKueri(){
+  const q=st.mode==="akar"?{q:DATA.roots[st.rootId],m:"akar",f:(st.forms.size===new Set(rootPost[st.rootId].map(([ai,wi])=>key(A[ai][5][wi][0]))).size)?null:[...st.forms]}
+        :st.mode==="gabung"?{q:st.terms.map(t=>t.type==="akar"?t.label:st.q).join(" + "),m:"gabung"}
+        :{q:st.q,m:"kata"};
+  if(st.mode==="gabung")q.q=splitQ(st.q).join(" + ");
+  pickTema("Simpan pencarian ini ke tema",t=>{
+    if(!t.queries.some(x=>x.q===q.q&&x.m===q.m&&JSON.stringify(x.f||null)===JSON.stringify(q.f||null)))t.queries.push(q);
+    saveTema();toast("Tersimpan di tema “"+t.nama+"”");
+  });
+}
+
+/* ===== ekspor ===== */
+function unduh(nama,mime,isi){
+  if(window.AndroidBridge&&window.AndroidBridge.saveFile){try{window.AndroidBridge.saveFile(nama,mime,isi);return}catch(e){}}
+  const b=new Blob([isi],{type:mime});const u=URL.createObjectURL(b);
+  const a=document.createElement("a");a.href=u;a.download=nama;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(u),2000);
+}
+const tgl=()=>{const d=new Date();return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")};
+function eksporCsv(){
+  const list=groupHits(hits());const q=x=>'"'+String(x??"").replace(/"/g,'""')+'"';
+  const rows=[["no","surah_no","nama_surah","ayat","urutan_nuzul","periode","pengecualian_ayat","teks_arab","terjemah","catatan","kata_cocok"]];
+  list.forEach((g,i)=>{const a=A[g.ai],p=posOf(st.v,g.s,g.n);
+    const kata=[...g.ws].filter(x=>x>=0).sort((x,y)=>x-y).map(x=>a[5][x][0]).join(" | ");
+    rows.push([i+1,g.s,S[g.s-1][1],g.n,p===null?"":(Number.isInteger(p)?p:"setelah "+Math.floor(p)),periodAy(st.v,g.s,g.n),(()=>{const r=exOf(st.v,g.s,g.n);return r?r[4]+(r[3]?": "+r[3]:"")+(r[5]?" - "+r[5]:""):""})(),a[2],a[3],CAT[akey(g.ai)]||"",kata]);});
+  const meta="# "+judulHasil()+" | versi: "+V[st.v].nama+" | urut "+st.urut+" | sumber: Tanzil, Kemenag RI, Quranic Arabic Corpus";
+  unduh("hasil-mujam-"+tgl()+".csv","text/csv;charset=utf-8","﻿"+meta+"\r\n"+rows.map(r=>r.map(q).join(",")).join("\r\n"));
+  toast("CSV diunduh ("+list.length+" ayat)");
+}
+function cadangkan(){
+  unduh("cadangan-mujam-nuzul-"+tgl()+".json","application/json",JSON.stringify({aplikasi:"mujam-nuzul",versi:1,tanggal:new Date().toISOString(),tema:TEMA,catatan:CAT},null,1));
+  toast("Cadangan diunduh");
+}
+function pulihkan(file){
+  const fr=new FileReader();
+  fr.onload=()=>{
+    try{
+      const d=JSON.parse(fr.result);
+      if(d.aplikasi!=="mujam-nuzul"||!Array.isArray(d.tema)||typeof d.catatan!=="object")throw 0;
+      askConfirm("Ganti semua tema ("+TEMA.length+") dan catatan saat ini dengan isi cadangan ("+d.tema.length+" tema, "+Object.keys(d.catatan).length+" catatan)?",()=>{
+        TEMA=d.tema.filter(t=>t&&t.id&&t.nama).map(t=>({id:String(t.id),nama:String(t.nama),queries:Array.isArray(t.queries)?t.queries:[],ayat:Array.isArray(t.ayat)?t.ayat:[]}));
+        CAT=d.catatan;saveTema();saveCat();toast("Cadangan dipulihkan");render();
+      });
+    }catch(e){toast("Berkas bukan cadangan yang valid")}
+  };
+  fr.readAsText(file);
+}
+
+/* ===== peristiwa ===== */
+$("go").onclick=()=>doSearch();
+$("q").addEventListener("keydown",e=>{if(e.key==="Enter")doSearch()});
+$("app").addEventListener("click",e=>{
+  const t=e.target;
+  if(lpFired){lpFired=false;e.preventDefault();return}
+  const b=t.closest("[data-t]");if(b){st.tab=b.dataset.t;render();return}
+  const u=t.closest("[data-u]");if(u){st.urut=u.dataset.u;st.shown=50;render();return}
+  const pc=t.closest("[data-p]");if(pc){const l=pc.dataset.p;if(!st.per)st.per=new Set();st.per.has(l)?st.per.delete(l):st.per.add(l);st.shown=50;render();return}
+  const rq=t.closest("[data-rq]");if(rq){const tm=temaNow();if(tm){tm.queries.splice(+rq.dataset.rq,1);saveTema();render()}return}
+  const c=t.closest(".chip");if(c&&c.dataset.f!==undefined){const k=c.dataset.f;st.forms.has(k)?st.forms.delete(k):st.forms.add(k);st.shown=50;render();return}
+  if(t.closest("#all")){e.preventDefault();selectRoot(st.rootId);return}
+  if(t.closest("#none")){e.preventDefault();st.forms=new Set();render();return}
+  if(t.closest("#kapa")){salin(kutipApp("apa"));return}
+  if(t.closest("#kchi")){salin(kutipApp("chicago"));return}
+  if(t.closest("#kris")){unduh("mujam-tartib-nuzul.ris","application/x-research-info-systems",kutipApp("ris"));return}
+  if(t.closest("#kbib")){unduh("mujam-tartib-nuzul.bib","application/x-bibtex",kutipApp("bib"));return}
+  if(t.closest("#cpall")){salinSemua();return}
+  if(t.closest("#csv")){eksporCsv();return}
+  const kt=t.closest(".kut");if(kt){const card=kt.closest(".card");salin(sitasiLengkap(+card.dataset.ai,!card.querySelector(".tr").hidden));return}
+  const cp=t.closest(".cpy");if(cp){const card=cp.closest(".card");salin(kutip(+card.dataset.ai,!card.querySelector(".tr").hidden));return}
+  const nb=t.closest(".ntb");if(nb){const card=nb.closest(".card"),nt=card.querySelector(".nt");nt.hidden=!nt.hidden;if(!nt.hidden)nt.querySelector("textarea").focus();return}
+  const at=t.closest(".addt");if(at){const ai=+at.closest(".card").dataset.ai;pickTema("Tambahkan ayat "+akey(ai)+" ke tema",tm=>{if(!tm.ayat.includes(akey(ai)))tm.ayat.push(akey(ai));saveTema();toast("Ayat ditambahkan ke “"+tm.nama+"”")});return}
+  const rm=t.closest(".rmt");if(rm){const tm=temaNow(),k=akey(+rm.closest(".card").dataset.ai);if(tm){tm.ayat=tm.ayat.filter(x=>x!==k);saveTema();render()}return}
+  if(t.closest("#tokata")){e.preventDefault();st.mode="kata";st.per=null;render();return}
+  if(t.closest("#toakar")){e.preventDefault();selectRoot(st.cand.roots[0]);return}
+  if(t.closest("#plus")){const q=$("q");const base=splitQ(st.q).join(" + ");q.value=base+" + ";q.focus();window.scrollTo(0,0);showSg();return}
+  if(t.closest("#simt")){simpanKueri();return}
+  if(t.closest("#more")){st.shown+=50;render();return}
+  if(t.closest("#trall")){st.tr=!st.tr;render();return}
+  const tb=t.closest(".trb");if(tb){const card=tb.closest(".card");card.querySelector(".tr").hidden=false;tb.remove();return}
+  if(t.closest("#tbaru")){askName("Tema baru","",nm=>{if(nm.trim()){newTema(nm);saveTema();render()}});return}
+  if(t.closest("#lcat")){st.mode="catatan";st.tab="hasil";st.per=null;st.shown=50;render();return}
+  if(t.closest("#tback")){st.tab="tema";render();return}
+  if(t.closest("#tren2")){const tm=temaNow();if(tm)askName("Ganti nama tema",tm.nama,nm=>{if(nm.trim()){tm.nama=nm.trim();saveTema();render()}});return}
+  const tc=t.closest("[data-tid]");
+  if(tc){const tm=TEMA.find(x=>x.id===tc.dataset.tid);if(!tm)return;
+    if(t.closest(".topen")){st.mode="tema";st.temaId=tm.id;st.tab="hasil";st.per=null;st.shown=50;render();window.scrollTo(0,0)}
+    else if(t.closest(".tren"))askName("Ganti nama tema",tm.nama,nm=>{if(nm.trim()){tm.nama=nm.trim();saveTema();render()}});
+    else if(t.closest(".tdel"))askConfirm("Hapus tema “"+tm.nama+"”? Pencarian dan ayat di dalamnya ikut terhapus (catatan ayat tidak).",()=>{TEMA=TEMA.filter(x=>x!==tm);saveTema();if(st.temaId===tm.id)st.mode=null;render()});
+    return}
+  if(t.closest("#bak")){cadangkan();return}
+  if(t.closest("#res")){$("resf").click();return}
+});
+$("app").addEventListener("change",e=>{
+  if(e.target.id==="ver"){st.v=+e.target.value;st.per=null;try{localStorage.setItem("mn_v2",st.v)}catch(x){}render()}
+  if(e.target.id==="resf"&&e.target.files[0]){pulihkan(e.target.files[0]);e.target.value=""}
+});
+let ntT;
+$("app").addEventListener("input",e=>{
+  const ta=e.target.closest(".nt textarea");if(!ta)return;
+  const card=ta.closest(".card"),k=akey(+card.dataset.ai);
+  clearTimeout(ntT);ntT=setTimeout(()=>{
+    const v=ta.value.trim();if(v)CAT[k]=ta.value;else delete CAT[k];saveCat();
+    const nb=card.querySelector(".ntb");nb.classList.toggle("on",!!v);nb.textContent="Catatan"+(v?" ✓":"");
+  },300);
+});
+$("mdl").addEventListener("click",e=>{
+  const t=e.target;
+  if(t.id==="mdl"||t.closest("#mno")){closeModal();return}
+  if(!mcb)return;
+  if(t.closest("#myes")){
+    if(mcb.type==="confirm"){const f=mcb.fn;closeModal();f()}
+    else if(mcb.type==="name"){const v=$("mname").value;const f=mcb.fn;closeModal();f(v)}
+    return}
+  if(mcb.type==="pick"){
+    const pk=t.closest("[data-pick]");
+    if(pk){const tm=TEMA.find(x=>x.id===pk.dataset.pick),f=mcb.onPick;closeModal();if(tm)f(tm);return}
+    if(t.closest("#mnew")){const nm=$("mname").value;if(!nm.trim()){toast("Isi nama tema dulu");return}const tm=newTema(nm),f=mcb.onPick;saveTema();closeModal();f(tm)}
+  }
+});
+
+/* ===== salin ===== */
+let toastT;
+function toast(m){const e=$("toast");e.textContent=m;e.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove("on"),1800)}
+async function salin(txt){
+  let ok=false;
+  try{await navigator.clipboard.writeText(txt);ok=true}catch(e){}
+  if(!ok){try{const ta=document.createElement("textarea");ta.value=txt;ta.style.cssText="position:fixed;opacity:0;top:0";document.body.appendChild(ta);ta.select();ok=document.execCommand("copy");ta.remove()}catch(e){}}
+  toast(ok?"Tersalin":"Gagal menyalin");
+}
+function kutip(ai,denganTr){
+  const a=A[ai];let s=a[2]+"\n— QS. "+S[a[0]-1][1]+" ("+a[0]+"):"+a[1];
+  if(denganTr)s+="\n"+a[3];return s;
+}
+const APPV="0.3.1";
+const LIC_TZ="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nTanzil Quran Text (Uthmani, Version 1.1)\nCopyright (C) 2007-2026 Tanzil Project\nLicense: Creative Commons Attribution 3.0\n\nThis copy of the Quran text is carefully produced, highly\nverified and continuously monitored by a group of specialists\nat Tanzil Project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this text, but CHANGING IT IS NOT ALLOWED.\n\n- This Quran text can be used in any website or application,\n  provided that its source (Tanzil Project) is clearly indicated,\n  and a link is made to tanzil.net to enable users to keep\n  track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all files\n  derived from or containing substantial portion of this text.\n\nPlease check updates at: http://tanzil.net/updates/";
+const LIC_QA="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nQuranic Arabic Corpus (morphology, version 0.4)\nCopyright (C) 2011 Kais Dukes\nLicense: GNU General Public License\n\nThe Quranic Arabic Corpus includes syntactic and morphological\nannotation of the Quran, and builds on the verified Arabic text\ndistributed by the Tanzil project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this file, but CHANGING IT IS NOT ALLOWED.\n\n- This annotation can be used in any website or application,\n  provided its source (the Quranic Arabic Corpus) is clearly\n  indicated, and a link is made to http://corpus.quran.com to enable\n  users to keep track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all works\n  derived from or containing substantial portion of this file.\n\nPlease check updates at: http://corpus.quran.com/download";
+const LIC_KM="Quran Translation\nName: Bahasa Indonesia\nTranslator: Indonesian Ministry of Religious Affairs\nLanguage: Indonesian\nID: id.indonesian\nLast Update: June 4, 2010\nSource: Tanzil.net";
+function namaPendek(v){
+  const M={kairo:"Mushaf Kairo 1924",noldeke:"Nöldeke–Schwally",darwazah:"Darwazah",klasik:"Riwayat klasik (Ibn ʿAbbas)",syahrastani:"Mushaf Ibn ʿAbbas (Syahrastani)",jabiri:"Al-Jabiri"};
+  return M[v.kode]||v.nama;
+}
+function kutipApp(f){
+  f=f||"apa";
+  if(f==="chicago")return "Janah, Miftahul. 2026. Mu'jam Tartib Nuzul. Versi "+APPV+". Aplikasi Android.";
+  if(f==="ris")return ["TY  - COMP","TI  - Mu'jam Tartib Nuzul","AU  - Janah, Miftahul","PY  - 2026","ET  - "+APPV,"M3  - Aplikasi Android","N1  - Teks: Tanzil; terjemah: Kemenag RI 2010; akar: Quranic Arabic Corpus (Dukes)","ER  - ",""].join("\r\n");
+  if(f==="bib")return "@software{janah2026mujam,\n  author  = {Janah, Miftahul},\n  title   = {Mu'jam Tartib Nuzul},\n  year    = {2026},\n  version = {"+APPV+"},\n  note    = {Aplikasi Android}\n}\n";
+  return "Janah, M. (2026). Mu'jam Tartib Nuzul (Versi "+APPV+") [Aplikasi Android].";
+}
+function sitasiLengkap(ai,denganTr){
+  const a=A[ai],s=a[0],n=a[1],v=V[st.v];
+  const p=posOf(st.v,s,n),perS=periodOf(st.v,s),perA=periodAy(st.v,s,n);
+  const nama="QS. "+S[s-1][1]+" ("+s+"):"+n;
+  let t=nama+".\n"+a[2];
+  if(denganTr)t+="\n"+a[3];
+  const bag=[perA];
+  if(p!==null)bag.push(Number.isInteger(p)?"Nuzul ke-"+p:"Nuzul disisipkan setelah ke-"+Math.floor(p));
+  bag.push("Mushaf ke-"+s);
+  t+="\n\nVersi tartib: "+namaPendek(v)+" ("+bag.join("; ")+")."
+  if(perA&&perS&&perA!==perS)t+="\nCatatan: periode ayat ini ("+perA+") berbeda dari periode surahnya ("+perS+").";
+  t+="\nTeks: Tanzil (tanzil.net). Terjemah: Kemenag RI 2010. Akar kata: Quranic Arabic Corpus (corpus.quran.com).";
+  t+="\nDitelusuri melalui: "+kutipApp("apa");
+  return t;
+}
+function salinSemua(){
+  const list=groupHits(hits());const v=V[st.v];
+  let s="Hasil pencarian "+judulHasil()+" — "+v.nama+", urut "+(st.urut==="nuzul"?"nuzul":"mushaf")+" ("+list.length+" ayat)\n\n";
+  s+=list.map((g,i)=>{const p=posOf(st.v,g.s,g.n);return (i+1)+". QS. "+S[g.s-1][1]+" ("+g.s+"):"+g.n+" ["+periodOf(st.v,g.s)+(p===null?"":", nuzul "+(Number.isInteger(p)?"ke-"+p:"setelah ke-"+Math.floor(p)))+"]\n"+kutip(g.ai,st.tr).split("\n").filter((x,j)=>j!==1).join("\n")}).join("\n\n");
+  s+="\n\nSumber teks: Tanzil (tanzil.net); terjemah: Kemenag RI; akar: Quranic Arabic Corpus (corpus.quran.com).\nDitelusuri melalui: "+kutipApp("apa");
+  salin(s);
+}
+
+/* ===== saran saat mengetik ===== */
+const formList=[...formIdx.entries()].filter(([k])=>!k.includes(" ")).map(([k,v])=>[k,v.length]);
+function hideSg(){const g=$("sg");g.hidden=true;g.innerHTML=""}
+function surfaceFor(k){
+  const c={};(formIdx.get(k)||[]).slice(0,30).forEach(([ai,wi])=>{const w=A[ai][5][wi][0];c[w]=(c[w]||0)+1});
+  const e=Object.entries(c).sort((a,b)=>b[1]-a[1]);return e.length?e[0][0]:k;
+}
+let sgItems=[];
+function lastTerm(v){const i=Math.max(v.lastIndexOf("+"),v.lastIndexOf("＋"));return i<0?{pre:"",t:v}:{pre:v.slice(0,i+1)+" ",t:v.slice(i+1)}}
+function showSg(){
+  const lt=lastTerm($("q").value);const k=key(lt.t.replace(/\s+/g,""));
+  if(k.length<2){hideSg();return}
+  const rs=[];rootKey.forEach((rk,i)=>{if(rk.startsWith(k))rs.push([i,rootPost[i].length])});
+  rs.sort((a,b)=>b[1]-a[1]);
+  const fs=formList.filter(([fk])=>fk.startsWith(k)&&fk!==k).sort((a,b)=>b[1]-a[1]);
+  const seen=new Set(),out=[];
+  rs.slice(0,3).forEach(([i,c])=>out.push({t:"akar",txt:[...DATA.roots[i]].join(" "),val:DATA.roots[i],c}));
+  for(const [fk,c] of fs){if(out.length>=8)break;const sf=surfaceFor(fk);if(seen.has(key(sf)))continue;seen.add(key(sf));out.push({t:"kata",txt:sf,val:sf,c})}
+  sgItems=out;
+  const g=$("sg");
+  if(!out.length){hideSg();return}
+  g.innerHTML=out.map((o,i)=>`<div data-i="${i}"><span class="ar">${esc(o.txt)}</span><small>${o.t==="akar"?"akar":"kata"} · ${o.c}×</small></div>`).join("");
+  g.hidden=false;
+}
+$("q").addEventListener("input",showSg);
+$("q").addEventListener("blur",()=>setTimeout(hideSg,150));
+$("sg").addEventListener("pointerdown",e=>e.preventDefault());
+$("sg").addEventListener("click",e=>{
+  const d=e.target.closest("[data-i]");if(!d)return;const o=sgItems[+d.dataset.i];
+  const lt=lastTerm($("q").value);
+  $("q").value=lt.pre+o.val;doSearch(!lt.pre&&o.t==="kata"?"kata":undefined);
+});
+
+/* ===== tekan-tahan pada bentuk ===== */
+let lpT=null,lpFired=false;
+$("app").addEventListener("pointerdown",e=>{
+  const c=e.target.closest(".chip");if(!c||c.dataset.f===undefined)return;
+  lpFired=false;clearTimeout(lpT);
+  lpT=setTimeout(()=>{lpFired=true;st.forms=new Set([c.dataset.f]);st.shown=50;render();if(navigator.vibrate)try{navigator.vibrate(30)}catch(x){}},500);
+});
+["pointerup","pointercancel","pointerleave","pointermove"].forEach(ev=>$("app").addEventListener(ev,e=>{
+  if(ev==="pointermove"&&e.pointerType==="mouse")return;clearTimeout(lpT)}));
+$("app").addEventListener("pointerup",()=>setTimeout(()=>{lpFired=false},120));
+$("app").addEventListener("contextmenu",e=>{if(e.target.closest(".chip"))e.preventDefault()});
+$("info").onclick=()=>{st.tab=st.tab==="about"?"hasil":"about";render();window.scrollTo(0,0)};
+render();
+</script>
+</body>
+</html>
