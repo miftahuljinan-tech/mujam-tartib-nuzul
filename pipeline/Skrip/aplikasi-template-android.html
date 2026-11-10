@@ -341,7 +341,7 @@ function about(){
    <p><b>Font</b>: Amiri Quran, Reem Kufi, Montserrat, SIL Open Font License 1.1.</p>`;
   const kutip=`<p>Cara mengutip aplikasi ini:</p><p class="note"><b>APA</b><br>${esc(kutipApp("apa"))}</p><p class="note"><b>Chicago</b><br>${esc(kutipApp("chicago"))}</p>
    <div class="acts" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button id="kapa">Salin APA</button><button id="kchi">Salin Chicago</button><button id="kris">Unduh RIS</button><button id="kbib">Unduh BibTeX</button></div>
-   <p class="mut" style="margin-top:8px">Berkas RIS dan BibTeX bisa diimpor ke Mendeley atau Zotero. DOI akan ditambahkan setelah rilis publik.</p>`;
+   <p class="mut" style="margin-top:8px">Berkas RIS dan BibTeX bisa diimpor ke Mendeley atau Zotero. DOI: ${APPDOI}.</p>`;
   const simpan=`<p>Tema dan catatan hanya disimpan di HP ini. Gunakan <i>Cadangkan</i> di tab Tema secara berkala.</p>`;
   return `<div class="card"><b>Tentang aplikasi</b>
   <p>Alat bantu penelitian tafsir maudhu'i: cari kata atau akar, lihat hasilnya menurut tartib mushaf atau tartib nuzul.</p>
@@ -558,7 +558,8 @@ function kutip(ai,denganTr){
   const a=A[ai];let s=a[2]+"\n— QS. "+S[a[0]-1][1]+" ("+a[0]+"):"+a[1];
   if(denganTr)s+="\n"+a[3];return s;
 }
-const APPV="0.3.2";
+const APPV="0.3.3";
+const APPDOI="10.5281/zenodo.24106184";
 const LIC_TZ="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nTanzil Quran Text (Uthmani, Version 1.1)\nCopyright (C) 2007-2026 Tanzil Project\nLicense: Creative Commons Attribution 3.0\n\nThis copy of the Quran text is carefully produced, highly\nverified and continuously monitored by a group of specialists\nat Tanzil Project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this text, but CHANGING IT IS NOT ALLOWED.\n\n- This Quran text can be used in any website or application,\n  provided that its source (Tanzil Project) is clearly indicated,\n  and a link is made to tanzil.net to enable users to keep\n  track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all files\n  derived from or containing substantial portion of this text.\n\nPlease check updates at: http://tanzil.net/updates/";
 const LIC_QA="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nQuranic Arabic Corpus (morphology, version 0.4)\nCopyright (C) 2011 Kais Dukes\nLicense: GNU General Public License\n\nThe Quranic Arabic Corpus includes syntactic and morphological\nannotation of the Quran, and builds on the verified Arabic text\ndistributed by the Tanzil project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this file, but CHANGING IT IS NOT ALLOWED.\n\n- This annotation can be used in any website or application,\n  provided its source (the Quranic Arabic Corpus) is clearly\n  indicated, and a link is made to http://corpus.quran.com to enable\n  users to keep track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all works\n  derived from or containing substantial portion of this file.\n\nPlease check updates at: http://corpus.quran.com/download";
 const LIC_KM="Quran Translation\nName: Bahasa Indonesia\nTranslator: Indonesian Ministry of Religious Affairs\nLanguage: Indonesian\nID: id.indonesian\nLast Update: June 4, 2010\nSource: Tanzil.net";
@@ -568,10 +569,10 @@ function namaPendek(v){
 }
 function kutipApp(f){
   f=f||"apa";
-  if(f==="chicago")return "Janah, Miftahul. 2026. Mu'jam Tartib Nuzul. Versi "+APPV+". Aplikasi Android.";
-  if(f==="ris")return ["TY  - COMP","TI  - Mu'jam Tartib Nuzul","AU  - Janah, Miftahul","PY  - 2026","ET  - "+APPV,"M3  - Aplikasi Android","N1  - Teks: Tanzil; terjemah: Kemenag RI 2010; akar: Quranic Arabic Corpus (Dukes)","ER  - ",""].join("\r\n");
-  if(f==="bib")return "@software{janah2026mujam,\n  author  = {Janah, Miftahul},\n  title   = {Mu'jam Tartib Nuzul},\n  year    = {2026},\n  version = {"+APPV+"},\n  note    = {Aplikasi Android}\n}\n";
-  return "Janah, M. (2026). Mu'jam Tartib Nuzul (Versi "+APPV+") [Aplikasi Android].";
+  if(f==="chicago")return "Janah, Miftahul. 2026. Mu'jam Tartib Nuzul. Versi "+APPV+". Aplikasi Android. https://doi.org/"+APPDOI+".";
+  if(f==="ris")return ["TY  - COMP","TI  - Mu'jam Tartib Nuzul","AU  - Janah, Miftahul","PY  - 2026","ET  - "+APPV,"M3  - Aplikasi Android","DO  - "+APPDOI,"UR  - https://doi.org/"+APPDOI,"N1  - Teks: Tanzil; terjemah: Kemenag RI 2010; akar: Quranic Arabic Corpus (Dukes)","ER  - ",""].join("\r\n");
+  if(f==="bib")return "@software{janah2026mujam,\n  author  = {Janah, Miftahul},\n  title   = {Mu'jam Tartib Nuzul},\n  year    = {2026},\n  version = {"+APPV+"},\n  doi     = {"+APPDOI+"},\n  url     = {https://doi.org/"+APPDOI+"},\n  note    = {Aplikasi Android}\n}\n";
+  return "Janah, M. (2026). Mu'jam Tartib Nuzul (Versi "+APPV+") [Aplikasi Android]. https://doi.org/"+APPDOI;
 }
 function sitasiLengkap(ai,denganTr){
   const a=A[ai],s=a[0],n=a[1],v=V[st.v];

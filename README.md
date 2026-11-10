@@ -47,4 +47,6 @@ Repositori ini memuat alur GitHub Actions (`.github/workflows/build-apk.yml`) ya
 
 ## Kutipan
 
-Lihat `CITATION.cff`, atau gunakan bagian "Kutip aplikasi ini" di halaman Tentang aplikasi.
+Janah, M. (2026). *Mu'jam Tartib Nuzul* (Versi 0.3.3) [Aplikasi Android]. https://doi.org/10.5281/zenodo.24106184
+
+DOI: [10.5281/zenodo.24106184](https://doi.org/10.5281/zenodo.24106184). Lihat juga `CITATION.cff`, atau gunakan bagian "Kutip aplikasi ini" di halaman Tentang aplikasi.
