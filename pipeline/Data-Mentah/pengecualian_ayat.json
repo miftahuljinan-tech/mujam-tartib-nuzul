@@ -7,7 +7,7 @@
   "noldeke": "Nöldeke–Schwally, Geschichte des Qorāns I (terj. Behn, Brill 2013), bahasan surah; nomor dipetakan dari Flügel ke Kairo"
  },
  "catatan_versi": {
-  "kairo": "Pengecualian mengikuti laporan Darwazah tentang tanda Makkiyah/Madaniyah pada mushaf cetakan Hanafi yang disahkan panitia Raja Fu'ad. Darwazah menyebut 147 ayat Madaniyah dalam 34 surah Makkiyah, tetapi hanya menguraikan 144 ayat; 3 ayat sisanya belum diketahui dan mengikuti periode surah. Empat ayat lain (17:32, 17:33, 17:57, 19:71) tidak ia sebut, tetapi tercantum pada judul surah mushaf Mesir (Haramain 1969) dan pada tabel Amal; keempatnya dimasukkan sebagai tidak pasti. Tabel Amal (menyalin Welch, EI2) memuat pula 73:10-11, tetapi tidak ada dalam daftar Darwazah sehingga tidak dimasukkan.",
+  "kairo": "Pengecualian mengikuti laporan Darwazah tentang tanda Makkiyah/Madaniyah pada mushaf cetakan Hanafi yang disahkan panitia Raja Fu'ad. Darwazah menyebut 147 ayat Madaniyah dalam 34 surah Makkiyah, tetapi hanya menguraikan 144 ayat; 3 ayat sisanya belum diketahui dan mengikuti periode surah. Enam ayat lain (17:32, 17:33, 17:57, 19:71, 73:10, 73:11) tidak ia sebut, tetapi tercantum pada judul surah mushaf Mesir (Haramain 1969) dan pada tabel Amal; keenamnya dimasukkan sebagai tidak pasti.",
   "darwazah": "Mengikuti penilaian Darwazah sendiri: hanya ayat yang ia terima sebagai Madaniyah yang berubah; ayat yang ia ragukan tetap Makkiyah; ayat yang penilaiannya belum dibaca tidak diubah.",
   "noldeke": "Hanya penilaian Nöldeke–Schwally sendiri; pendapat yang mereka laporkan lalu tolak tidak dimasukkan. Nomor ayat dipetakan dari Flügel ke Kairo lewat isi ayat; batas beberapa rentang bisa bergeser satu ayat.",
   "jabiri": "Al-Jabiri menolak pengecualian ayat dan menjaga kesatuan surah (al-Qism ats-Tsalits hlm. 36; al-Qism ats-Tsani hlm. 384), sehingga seluruh ayat mengikuti tahap surahnya.",
@@ -454,6 +454,14 @@
    "periode": "Madaniyah",
    "status": "pasti",
    "catatan": ""
+  },
+  {
+   "versi": "kairo",
+   "surah": 73,
+   "ayat": "10-11",
+   "periode": "Madaniyah",
+   "status": "tidak_pasti",
+   "catatan": "Tidak disebut Darwazah; tercantum pada judul surah mushaf Mesir (Haramain 1969, khat Qadirghli, diperiksa Al-Azhar terhadap Mushaf Amiri) dan pada tabel Amal. Mungkin termasuk 147 ayat yang ia hitung."
   },
   {
    "versi": "kairo",
