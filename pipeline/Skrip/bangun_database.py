@@ -2,7 +2,7 @@
 """
 Membangun mujam.db dari tiga berkas mentah:
   Data-Mentah/quran-uthmani.txt               (Tanzil, teks Utsmani)
-  Data-Mentah/id.indonesian.txt               (Tanzil, terjemah Kemenag)
+  Data-Mentah/terjemah_kemenag_2019.txt        (terjemah Kemenag RI, Edisi Penyempurnaan 2019, LPMQ)
   Data-Mentah/quranic-corpus-morphology-0.4.txt (Quranic Arabic Corpus)
 Teks Tanzil TIDAK diubah; disalin apa adanya.
 Hasil: Hasil/mujam.db, Hasil/laporan-pemeriksaan.txt (data tartib dimasukkan oleh impor_tartib.py)
@@ -82,7 +82,7 @@ def baca_ayat(path):
 
 BASMALAH = arab_basmalah = "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ"
 arab = baca_ayat(DATA / "quran-uthmani.txt")
-indo = baca_ayat(DATA / "id.indonesian.txt")
+indo = baca_ayat(DATA / "terjemah_kemenag_2019.txt")
 assert len(arab) == len(indo) == 6236, (len(arab), len(indo))
 assert set(arab) == set(indo)
 
@@ -110,7 +110,7 @@ CREATE TABLE word(id INTEGER PRIMARY KEY, ayah_id INTEGER, posisi INTEGER, teks 
 
 meta = {
  "sumber_teks": "Tanzil Quran Text (Uthmani, Version 1.1) - Copyright (C) 2007-2026 Tanzil Project - http://tanzil.net - lisensi CC BY 3.0, tidak diubah",
- "sumber_terjemah": "Terjemah Kemenag RI (2010) via Tanzil - http://tanzil.net",
+ "sumber_terjemah": "Al-Qur'an dan Terjemahnya, Edisi Penyempurnaan 2019, Kementerian Agama RI (LPMQ), digunakan atas izin LPMQ",
  "sumber_morfologi": "Quranic Arabic Corpus, morphology v0.4, Kais Dukes - http://corpus.quran.com - lisensi GNU GPL",
  "catatan": "Akar kata berasal dari anotasi Quranic Arabic Corpus, bukan dari kitab Mu'jam Mufahras Fu'ad Abd al-Baqi.",
 }

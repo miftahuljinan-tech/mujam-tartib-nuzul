@@ -87,23 +87,13 @@ Sumber: <http://corpus.quran.com>
 
 Catatan penggunaan: berkas dikonversi menjadi basis data pencarian (akar, lemma, kelas kata) oleh `pipeline/Skrip/bangun_database.py`. Berkas aslinya tidak diubah.
 
-### 3. Terjemah — Kementerian Agama RI, 2010 (`id.indonesian.txt`)
+### 3. Terjemah — Kementerian Agama RI, Edisi Penyempurnaan 2019 (`terjemah_kemenag_2019.txt`)
 
-Diperoleh melalui Tanzil (<http://tanzil.net>). Berkas ini tidak memuat pernyataan lisensi, hanya keterangan sumber:
+*Al-Qur'an dan Terjemahnya, Edisi Penyempurnaan 2019*, Kementerian Agama Republik Indonesia, disusun oleh Lajnah Pentashihan Mushaf Al-Qur'an (LPMQ), Badan Litbang dan Diklat Kementerian Agama RI.
 
-```
-# --------------------------------------------------------------------
-#
-#  Quran Translation
-#  Name: Bahasa Indonesia
-#  Translator: Indonesian Ministry of Religious Affairs
-#  Language: Indonesian
-#  ID: id.indonesian
-#  Last Update: June 4, 2010
-#  Source: Tanzil.net
-#
-# --------------------------------------------------------------------
-```
+**Izin penggunaan:** diberikan oleh Mustakim, Lc., M.Ag. (LPMQ) kepada Miftahul Janah pada 11 November 2026. Tidak ada ketentuan kalimat pencantuman tertentu selain sumbernya dicantumkan dengan jelas, sehingga sumber ini disebut di layar Tentang, pada ekspor dan sitasi, dan di berkas ini.
+
+Berkas `terjemah_kemenag_2019.txt` diekstrak dari PDF resmi edisi 2019 (juz 1-10, 11-19, dan 20-30). Hanya teks terjemah tiap ayat yang dimuat; sub judul, nama surah, dan catatan kaki tidak disertakan. Pemenggalan kata di akhir baris disambung kembali, dan penulisan mengikuti PDF sumber (termasuk "berbuatbaiklah" pada 2:195 dan "Ḥa Mīm" pada 41:1). Pada PDF, ayat 2:195 tidak diberi nomor, sehingga pemisahannya dari 2:194 dilakukan oleh pengekstrak. Edisi ini menggantikan berkas terjemah lama dari Tanzil yang dipakai sampai v0.6.9. Edisi lama tidak lagi dipakai atau disertakan, meskipun masih tersimpan di riwayat commit versi sebelumnya.
 
 ### 4. Font
 

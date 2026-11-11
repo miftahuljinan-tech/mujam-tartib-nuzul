@@ -14,6 +14,6 @@ Anda bebas menyalin, menyebarkan, dan menggubah data ini, termasuk untuk keperlu
 1. **Atribusi**: Anda mencantumkan nama penyusun, "Miftahul Janah, Mu'jam Tartib Nuzul (2026)", tautan ke lisensi, dan menyebut jika Anda mengubahnya.
 2. **BerbagiSerupa**: hasil gubahan Anda dilisensikan dengan lisensi yang sama atau yang kompatibel.
 
-Lisensi ini **tidak** berlaku untuk berkas pihak ketiga di `pipeline/Data-Mentah/` (`quran-uthmani.txt`, `quranic-corpus-morphology-0.4.txt`, `id.indonesian.txt`). Ketentuannya ada di `NOTICE.md`.
+Lisensi ini **tidak** berlaku untuk berkas pihak ketiga di `pipeline/Data-Mentah/` (`quran-uthmani.txt`, `quranic-corpus-morphology-0.4.txt`, `terjemah_kemenag_2019.txt`). Ketentuannya ada di `NOTICE.md`.
 
 Data ini memuat fakta dan catatan ringkas hasil kajian penyusun atas karya-karya yang dirujuk. Hak cipta atas karya-karya tersebut tetap pada pemiliknya masing-masing.
