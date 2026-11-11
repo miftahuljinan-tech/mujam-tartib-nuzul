@@ -42,14 +42,38 @@ for vid, kode, nama, rujukan in db.execute("select id,kode,nama,rujukan from tar
     versi.append({"kode": kode, "nama": nama, "rujukan": rujukan or "", "pos": pos, "seg": seg, "ex": ex, "exsrc": exsrc})
 D["versi"] = versi
 
+# Nama diri yang di QAC tanpa akar tetapi di Mu'jam Mufahras dicantumkan di bawah akar tertentu.
+# Setiap pasangan sudah dicocokkan dengan halaman Mu'jam (cetakan pindai, lihat catatan di bawah).
+# kunci: lema tanpa harakat (hamza disatukan) -> akar menurut Mu'jam Mufahras
+ALIH_MUJAM = {
+    "مسيح": ("مسح", "hlm. 666", "المسيح"),     # المسيح (11)
+    "ابليس": ("بلس", "hlm. 134", "إبليس"),    # إبليس (11)
+    "محمد": ("حمد", "hlm. 218", "محمد"),     # محمد (4)
+    "احمد": ("حمد", "hlm. 218", "أحمد"),     # أحمد (1)
+    "سليمن": ("سلم", "hlm. 357-358", "سليمان"),  # سليمان (17)
+    "عمرن": ("عمر", "hlm. 483", "عمران"),     # عمران (3)
+}
+_HRK = re.compile("[\u064B-\u065F\u0670\u0640]")
+def _kunci(l):
+    return _HRK.sub("", l or "").translate(str.maketrans("إأآٱ", "اااا"))
+rid_of = {r[1]: r[0] for r in roots}
+alih_n = {}
 ayah = []
 words = {}
-for aid, wid, teks, rid in db.execute("select ayah_id,posisi,teks,root_id from word order by ayah_id,posisi"):
+for aid, wid, teks, rid, lemma, pos in db.execute("select ayah_id,posisi,teks,root_id,lemma,pos from word order by ayah_id,posisi"):
+    if rid is None and pos == "PN":
+        k = _kunci(lemma)
+        if k in ALIH_MUJAM:
+            rid = rid_of[ALIH_MUJAM[k][0]]
+            alih_n[k] = alih_n.get(k, 0) + 1
     words.setdefault(aid, []).append([teks, (rid or 0) - 1])  # -1 = tanpa akar
 mismatch = {r[0] for r in db.execute("select distinct ayah_id from word where sumber_teks='korpus'")}
 for aid, s, n, teks, tr in db.execute("select id,surah_id,nomor,teks,terjemah from ayah order by id"):
     ayah.append([s, n, teks, "" if TANPA_TR else tr, 1 if aid in mismatch else 0, words[aid]])
 D["ayah"] = ayah
+assert len(alih_n) == len(ALIH_MUJAM), alih_n
+# daftar untuk halaman Tentang: [nama, akar, jumlah kemunculan]
+D["meta"]["alih_mujam"] = json.dumps([[ALIH_MUJAM[k][2], ALIH_MUJAM[k][0], alih_n[k]] for k in ALIH_MUJAM], ensure_ascii=False)
 if TANPA_TR:
     D["meta"]["tanpa_terjemah"] = "1"
 
