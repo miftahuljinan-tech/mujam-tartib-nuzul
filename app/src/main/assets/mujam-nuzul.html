@@ -99,6 +99,15 @@ a{color:var(--acc)}
 .stt{font-size:13px;line-height:1.5;background:var(--acc2);border-radius:8px;padding:8px 10px;margin:4px 0 10px;overflow-wrap:anywhere}
 .stt.off{background:#faeeda;color:#633806}
 @media (prefers-color-scheme:dark){.stt.off{background:#4a3a14;color:#f3d9a0}}
+body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%231f6f5c' stroke-opacity='.15' stroke-width='1.1'%3E%3Crect x='17' y='17' width='30' height='30'/%3E%3Crect x='17' y='17' width='30' height='30' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='6'/%3E%3C/g%3E%3C/svg%3E")}
+.orn{background-image:none}
+header{background-image:inherit}
+.card[data-ai]{position:relative;padding:20px 22px 22px;border-color:#d9c58f;box-shadow:inset 0 0 0 3px var(--card),inset 0 0 0 4px #e8dcb8}
+.card[data-ai]::before,.card[data-ai]::after{content:"";position:absolute;width:20px;height:20px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Cpath d='M2 24V8Q2 2 8 2H24M2 14Q8 14 8 8M14 2Q14 8 8 8' fill='none' stroke='%23c9a24a' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center/contain}
+.card[data-ai]::before{left:6px;top:6px}.card[data-ai]::after{right:6px;bottom:6px;transform:rotate(180deg)}
+@media (prefers-color-scheme:dark){
+body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%235cc2a6' stroke-opacity='.16' stroke-width='1.1'%3E%3Crect x='17' y='17' width='30' height='30'/%3E%3Crect x='17' y='17' width='30' height='30' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='6'/%3E%3C/g%3E%3C/svg%3E")}
+.card[data-ai]{border-color:#6b5a2a;box-shadow:inset 0 0 0 3px var(--card),inset 0 0 0 4px #4a4130}}
 </style>
 </head>
 <body>
@@ -607,7 +616,7 @@ function kutip(ai,denganTr){
   const a=A[ai];let s=a[2]+"\n— QS. "+S[a[0]-1][1]+" ("+a[0]+"):"+a[1];
   if(denganTr)s+="\n"+a[3];return s;
 }
-const APPV="0.5.0";
+const APPV="0.5.1";
 const APPDOI="10.5281/zenodo.24106183";
 const LIC_TZ="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nTanzil Quran Text (Uthmani, Version 1.1)\nCopyright (C) 2007-2026 Tanzil Project\nLicense: Creative Commons Attribution 3.0\n\nThis copy of the Quran text is carefully produced, highly\nverified and continuously monitored by a group of specialists\nat Tanzil Project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this text, but CHANGING IT IS NOT ALLOWED.\n\n- This Quran text can be used in any website or application,\n  provided that its source (Tanzil Project) is clearly indicated,\n  and a link is made to tanzil.net to enable users to keep\n  track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all files\n  derived from or containing substantial portion of this text.\n\nPlease check updates at: http://tanzil.net/updates/";
 const LIC_QA="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nQuranic Arabic Corpus (morphology, version 0.4)\nCopyright (C) 2011 Kais Dukes\nLicense: GNU General Public License\n\nThe Quranic Arabic Corpus includes syntactic and morphological\nannotation of the Quran, and builds on the verified Arabic text\ndistributed by the Tanzil project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this file, but CHANGING IT IS NOT ALLOWED.\n\n- This annotation can be used in any website or application,\n  provided its source (the Quranic Arabic Corpus) is clearly\n  indicated, and a link is made to http://corpus.quran.com to enable\n  users to keep track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all works\n  derived from or containing substantial portion of this file.\n\nPlease check updates at: http://corpus.quran.com/download";
