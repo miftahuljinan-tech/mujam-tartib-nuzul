@@ -108,6 +108,11 @@ header{background-image:inherit}
 @media (prefers-color-scheme:dark){
 body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%235cc2a6' stroke-opacity='.16' stroke-width='1.1'%3E%3Crect x='17' y='17' width='30' height='30'/%3E%3Crect x='17' y='17' width='30' height='30' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='6'/%3E%3C/g%3E%3C/svg%3E")}
 .card[data-ai]{border-color:#6b5a2a;box-shadow:inset 0 0 0 3px var(--card),inset 0 0 0 4px #4a4130}}
+.fgrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.fgrid .chip{display:flex;justify-content:space-between;align-items:center;gap:6px;border-radius:10px;min-height:42px;padding:4px 10px}
+.fgrid .chip .ar{flex:1;text-align:center;min-width:0}
+.fgrid .chip .mut{flex:none;font-size:12px}
+.fhd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}.fhd button{font-size:13px;padding:4px 12px}
 </style>
 </head>
 <body>
@@ -231,7 +236,7 @@ function gabung(ts){
 }
 const splitQ=raw=>raw.split(/[+＋]/).map(s=>s.trim()).filter(Boolean).slice(0,3);
 function doSearch(force){
-  const raw=$("q").value.trim();st.q=raw;st.shown=50;st.tab="hasil";st.per=null;hideSg();
+  const raw=$("q").value.trim();st.q=raw;st.shown=50;st.tab="hasil";st.per=null;st.fcol=false;hideSg();
   if(!raw){st.mode=null;render();return}
   const parts=splitQ(raw);
   if(parts.length>=2){
@@ -292,6 +297,7 @@ function judulHasil(){
 }
 
 /* ===== tampilan ===== */
+function formTotal(){return new Set(rootPost[st.rootId].map(([ai,wi])=>key(A[ai][5][wi][0]))).size}
 function formChips(){
   const cnt=new Map(),surf=new Map();
   rootPost[st.rootId].forEach(([ai,wi])=>{
@@ -422,8 +428,8 @@ function render(){
      <hr class="hr">
      <div class="btns">${st.cand&&st.cand.forms.length?'<button id="tokata">Lihat sebagai kata</button>':""}<button id="all">Pilih semua</button><button id="none">Kosongkan semua</button></div>
      <div class="btns" style="margin-top:8px"><button id="plus">+ Akar kedua</button><button id="simt" class="p">Simpan ke tema</button></div>
-     <div class="mut" style="margin-top:10px">Bentuk turunan. Ketuk untuk memilih/membatalkan; <b>tekan-tahan</b> untuk memilih hanya satu bentuk.</div>
-     <div class="chips" id="chips">${formChips()}</div></div>`;
+     <div class="fhd"><span class="mut">${formTotal()} bentuk turunan · ${st.forms.size} dipilih</span><button id="ftg">${st.fcol?"Tampilkan":"Sembunyikan"}</button></div>
+     ${st.fcol?"":`<div class="mut" style="margin:6px 0">Ketuk untuk memilih atau membatalkan; <b>tekan-tahan</b> untuk memilih hanya satu bentuk.</div><div class="chips fgrid" id="chips">${formChips()}</div>`}</div>`;
   }else if(st.mode==="kata"){
     const nAyat=new Set(baseHits().map(x=>x[0])).size;
     top=`<div class="card orn"><div class="kt">Kata “<span class="ar kw" dir="rtl">${esc(st.q)}</span>”</div>
@@ -537,6 +543,7 @@ $("app").addEventListener("click",e=>{
   if(t.closest("#kbib")){unduh("mujam-tartib-nuzul.bib","application/x-bibtex",kutipApp("bib"));return}
   if(t.closest("#cpall")){salinSemua();return}
   if(t.closest("#csv")){eksporCsv();return}
+  if(t.closest("#ftg")){st.fcol=!st.fcol;render();return}
   const sp=t.closest("[data-sp]");if(sp){const q=PRESET[+sp.dataset.sp];SET.fa=q[0];SET.ft=q[1];sset("mn_set",SET);applySet();render();return}
   if(t.closest("#autotg")){AUTO=!AUTO;sset("mn_auto",AUTO);if(AUTO)autoNow();else{clearTimeout(autoT);autoT=null}render();return}
   const sh=t.closest("[data-cc]");if(sh){const c=sh.dataset.cc;st.cmpSort=c==="m"?"m":+c;render();return}
@@ -616,7 +623,7 @@ function kutip(ai,denganTr){
   const a=A[ai];let s=a[2]+"\n— QS. "+S[a[0]-1][1]+" ("+a[0]+"):"+a[1];
   if(denganTr)s+="\n"+a[3];return s;
 }
-const APPV="0.5.1";
+const APPV="0.5.2";
 const APPDOI="10.5281/zenodo.24106183";
 const LIC_TZ="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nTanzil Quran Text (Uthmani, Version 1.1)\nCopyright (C) 2007-2026 Tanzil Project\nLicense: Creative Commons Attribution 3.0\n\nThis copy of the Quran text is carefully produced, highly\nverified and continuously monitored by a group of specialists\nat Tanzil Project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this text, but CHANGING IT IS NOT ALLOWED.\n\n- This Quran text can be used in any website or application,\n  provided that its source (Tanzil Project) is clearly indicated,\n  and a link is made to tanzil.net to enable users to keep\n  track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all files\n  derived from or containing substantial portion of this text.\n\nPlease check updates at: http://tanzil.net/updates/";
 const LIC_QA="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nQuranic Arabic Corpus (morphology, version 0.4)\nCopyright (C) 2011 Kais Dukes\nLicense: GNU General Public License\n\nThe Quranic Arabic Corpus includes syntactic and morphological\nannotation of the Quran, and builds on the verified Arabic text\ndistributed by the Tanzil project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this file, but CHANGING IT IS NOT ALLOWED.\n\n- This annotation can be used in any website or application,\n  provided its source (the Quranic Arabic Corpus) is clearly\n  indicated, and a link is made to http://corpus.quran.com to enable\n  users to keep track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all works\n  derived from or containing substantial portion of this file.\n\nPlease check updates at: http://corpus.quran.com/download";
