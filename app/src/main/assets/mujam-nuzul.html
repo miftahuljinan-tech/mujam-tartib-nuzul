@@ -28,9 +28,9 @@ button.on{background:var(--acc2);border-color:var(--acc);color:var(--acc)}
 .chip{padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:15px}
 .chip.on{background:var(--acc2);border-color:var(--acc)}
 .chip{display:inline-flex;align-items:center;gap:6px}.chip .ar{font-size:20px;unicode-bidi:isolate}.chip .mut{unicode-bidi:isolate}
-.ay{font-size:26px;line-height:2.1}
+.ay{font-size:var(--fa,26px);line-height:2.1}
 mark{background:var(--mark);color:inherit;border-radius:4px;padding:0 2px}
-.tr{margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);font-size:15px}
+.tr{margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);font-size:var(--ft,15px)}
 .hd{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--mut);flex-wrap:wrap}
 .ex{margin-top:6px;padding:6px 10px;border-radius:8px;background:var(--acc2);font-size:13px;line-height:1.5}.ex details{margin-top:2px}.ex summary{cursor:pointer;color:var(--acc);font-size:12px}.ex details div{margin-top:3px}.pill{background:var(--acc2);color:var(--acc);border-radius:999px;padding:1px 8px}
 .bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:14px}
@@ -90,6 +90,15 @@ a{color:var(--acc)}
 .trk{position:relative;height:6px;border-radius:3px;background:var(--line);margin:6px 7px 0}
 .trk i{position:absolute;top:-4px;width:14px;height:14px;border-radius:50%;background:var(--acc);transform:translateX(-50%)}
 .tl{display:flex;justify-content:space-between;font-size:11px;color:var(--mut);margin-top:3px}.tl b{color:var(--ink);font-weight:600}
+.rw2{display:grid;grid-template-columns:92px 1fr 32px;gap:8px;align-items:center;margin:8px 0}.rw2 span{font-size:13px;color:var(--mut)}.rw2 b{text-align:right;font-size:14px}
+.rw2 input[type=range]{width:100%;accent-color:var(--acc)}
+.sw{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 0 8px}
+.tg{width:44px;height:26px;border-radius:13px;background:var(--line);position:relative;flex:none;padding:0;border:0}
+.tg i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--card);transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.tg.on{background:var(--acc)}.tg.on i{left:21px}
+.stt{font-size:13px;line-height:1.5;background:var(--acc2);border-radius:8px;padding:8px 10px;margin:4px 0 10px;overflow-wrap:anywhere}
+.stt.off{background:#faeeda;color:#633806}
+@media (prefers-color-scheme:dark){.stt.off{background:#4a3a14;color:#f3d9a0}}
 </style>
 </head>
 <body>
@@ -171,7 +180,7 @@ function sset(k,v){mem[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(
 try{localStorage.setItem("mn_t","1");localStorage.removeItem("mn_t")}catch(e){storeOK=false}
 let TEMA=sget("mn_tema",[]),CAT=sget("mn_cat",{});
 if(!Array.isArray(TEMA))TEMA=[];if(typeof CAT!=="object"||!CAT)CAT={};
-const saveTema=()=>sset("mn_tema",TEMA),saveCat=()=>sset("mn_cat",CAT);
+const saveTema=()=>{sset("mn_tema",TEMA);autoSoon()},saveCat=()=>{sset("mn_cat",CAT);autoSoon()};
 
 /* ===== keadaan ===== */
 const st={q:"",mode:null,rootId:null,forms:null,terms:null,post:null,cand:null,temaId:null,v:0,urut:"nuzul",tr:false,shown:50,tab:"hasil",per:null};
@@ -360,8 +369,14 @@ function about(){
   const kutip=`<p>Cara mengutip aplikasi ini:</p><p class="note"><b>APA</b><br>${esc(kutipApp("apa"))}</p><p class="note"><b>Chicago</b><br>${esc(kutipApp("chicago"))}</p>
    <div class="acts" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button id="kapa">Salin APA</button><button id="kchi">Salin Chicago</button><button id="kris">Unduh RIS</button><button id="kbib">Unduh BibTeX</button></div>
    <p class="mut" style="margin-top:8px">Berkas RIS dan BibTeX bisa diimpor ke Mendeley atau Zotero. DOI: ${APPDOI}.</p>`;
-  const simpan=`<p>Tema dan catatan hanya disimpan di HP ini. Gunakan <i>Cadangkan</i> di tab Tema secara berkala.</p>`;
-  return `<div class="card"><b>Tentang aplikasi</b>
+  const simpan=`<p>Tema dan catatan disimpan di HP ini, tanpa dikirim ke internet. Cadangan otomatis (jika aktif) menyimpan satu berkas ke folder Unduhan setiap ada perubahan. Untuk memulihkan di HP baru, salin berkasnya lalu pilih <i>Pulihkan dari berkas</i> di tab Tema.</p>`;
+  const tampil=`<div class="card"><b>Tampilan</b>
+   <div class="rw2"><span>Huruf Arab</span><input type="range" id="sfa" min="22" max="40" step="1" value="${SET.fa}"><b id="vfa">${SET.fa}</b></div>
+   <div class="rw2"><span>Terjemah</span><input type="range" id="sft" min="13" max="20" step="1" value="${SET.ft}"><b id="vft">${SET.ft}</b></div>
+   <div class="btns" style="margin-top:8px"><button data-sp="0">Normal</button><button data-sp="1">Besar</button><button data-sp="2">Sangat besar</button></div>
+   <div class="mut" style="margin-top:10px">Pratinjau</div>
+   <div class="ay ar">فَٱصْبِرْ لِحُكْمِ رَبِّكَ وَلَا تَكُن كَصَاحِبِ ٱلْحُوتِ</div><div class="tr">Terjemah tampil dengan ukuran ini.</div></div>`;
+  return tampil+`<div class="card"><b>Tentang aplikasi</b>
   <p>Alat bantu penelitian tafsir maudhu'i: cari kata atau akar, lihat hasilnya menurut tartib mushaf atau tartib nuzul.</p>
   <p class="mut">Pengembang: Miftahul Janah · Versi ${APPV}</p>
   ${sec("Catatan metodologis",metod)}${sec("Catatan per versi",versi)}${sec("Pengecualian ayat (⚑)",exc)}${sec("Sumber data",sumber)}${sec("Lisensi dan hak cipta",lis)}${sec("Kutip aplikasi ini",kutip)}${sec("Penyimpanan data",simpan)}</div>`;
@@ -376,6 +391,7 @@ function temaTab(){
      <div class="mut">${t.queries.length} pencarian · ${t.ayat.length} ayat manual</div>
      <div class="btns" style="margin-top:8px"><button class="topen">Buka</button><button class="tren">Ganti nama</button><button class="tdel">Hapus</button></div></div>`).join(""):'<div class="card mut">Belum ada tema. Cari sebuah akar, lalu tekan “Simpan ke tema”.</div>'}
    <div class="card"><b>Cadangan</b>
+    ${hasAuto()?`<div class="sw"><div>Cadangan otomatis<div class="mut">Simpan ke folder Unduhan setiap tema atau catatan berubah</div></div><button class="tg ${AUTO?"on":""}" id="autotg" aria-label="Cadangan otomatis"><i></i></button></div>${autoStatus()}`:""}
     <div class="mut">Simpan semua tema dan catatan ke satu berkas, atau pulihkan dari berkas cadangan.</div>
     <div class="btns" style="margin-top:8px"><button id="bak">Cadangkan (unduh)</button><button id="res">Pulihkan dari berkas</button></div>
     <input type="file" id="resf" accept=".json,application/json" hidden></div>`;
@@ -512,6 +528,8 @@ $("app").addEventListener("click",e=>{
   if(t.closest("#kbib")){unduh("mujam-tartib-nuzul.bib","application/x-bibtex",kutipApp("bib"));return}
   if(t.closest("#cpall")){salinSemua();return}
   if(t.closest("#csv")){eksporCsv();return}
+  const sp=t.closest("[data-sp]");if(sp){const q=PRESET[+sp.dataset.sp];SET.fa=q[0];SET.ft=q[1];sset("mn_set",SET);applySet();render();return}
+  if(t.closest("#autotg")){AUTO=!AUTO;sset("mn_auto",AUTO);if(AUTO)autoNow();else{clearTimeout(autoT);autoT=null}render();return}
   const sh=t.closest("[data-cc]");if(sh){const c=sh.dataset.cc;st.cmpSort=c==="m"?"m":+c;render();return}
   if(t.closest("#cmpbtn")){st.cmpSort=null;st.tab="bandingkan";render();window.scrollTo(0,0);return}
   if(t.closest("#cmptsv")){salin(cmpTabelText());return}
@@ -549,6 +567,11 @@ $("app").addEventListener("change",e=>{
 });
 let ntT;
 $("app").addEventListener("input",e=>{
+  const id=e.target.id;if(id!=="sfa"&&id!=="sft")return;
+  if(id==="sfa"){SET.fa=+e.target.value;$("vfa").textContent=SET.fa}else{SET.ft=+e.target.value;$("vft").textContent=SET.ft}
+  applySet();sset("mn_set",SET);
+});
+$("app").addEventListener("input",e=>{
   const ta=e.target.closest(".nt textarea");if(!ta)return;
   const card=ta.closest(".card"),k=akey(+card.dataset.ai);
   clearTimeout(ntT);ntT=setTimeout(()=>{
@@ -584,7 +607,7 @@ function kutip(ai,denganTr){
   const a=A[ai];let s=a[2]+"\n— QS. "+S[a[0]-1][1]+" ("+a[0]+"):"+a[1];
   if(denganTr)s+="\n"+a[3];return s;
 }
-const APPV="0.4.0";
+const APPV="0.5.0";
 const APPDOI="10.5281/zenodo.24106183";
 const LIC_TZ="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nTanzil Quran Text (Uthmani, Version 1.1)\nCopyright (C) 2007-2026 Tanzil Project\nLicense: Creative Commons Attribution 3.0\n\nThis copy of the Quran text is carefully produced, highly\nverified and continuously monitored by a group of specialists\nat Tanzil Project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this text, but CHANGING IT IS NOT ALLOWED.\n\n- This Quran text can be used in any website or application,\n  provided that its source (Tanzil Project) is clearly indicated,\n  and a link is made to tanzil.net to enable users to keep\n  track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all files\n  derived from or containing substantial portion of this text.\n\nPlease check updates at: http://tanzil.net/updates/";
 const LIC_QA="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nQuranic Arabic Corpus (morphology, version 0.4)\nCopyright (C) 2011 Kais Dukes\nLicense: GNU General Public License\n\nThe Quranic Arabic Corpus includes syntactic and morphological\nannotation of the Quran, and builds on the verified Arabic text\ndistributed by the Tanzil project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this file, but CHANGING IT IS NOT ALLOWED.\n\n- This annotation can be used in any website or application,\n  provided its source (the Quranic Arabic Corpus) is clearly\n  indicated, and a link is made to http://corpus.quran.com to enable\n  users to keep track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all works\n  derived from or containing substantial portion of this file.\n\nPlease check updates at: http://corpus.quran.com/download";
@@ -687,6 +710,36 @@ function cmpAyatText(ai){
   t+=V.map((v,vi)=>{const p=posOf(vi,s,n);return "- "+namaPendek(v)+": "+(p===null?"tidak ada dalam daftar":(Number.isInteger(p)?"Nuzul ke-"+p:"disisipkan setelah ke-"+Math.floor(p))+" ("+periodAy(vi,s,n)+")")}).join("\n");
   t+="\nMushaf ke-"+s+".\nTeks: Tanzil (tanzil.net).\nDitelusuri melalui: "+kutipApp("apa");
   return t;
+}
+/* ===== pengaturan tampilan & cadangan otomatis ===== */
+let SET=sget("mn_set",{fa:26,ft:15});
+if(!SET||typeof SET!=="object")SET={fa:26,ft:15};
+SET.fa=Math.min(40,Math.max(22,+SET.fa||26));SET.ft=Math.min(20,Math.max(13,+SET.ft||15));
+function applySet(){const r=document.documentElement.style;r.setProperty("--fa",SET.fa+"px");r.setProperty("--ft",SET.ft+"px")}
+applySet();
+const PRESET=[[26,15],[32,17],[38,20]];
+let AUTO=sget("mn_auto",true),AUTOLAST=sget("mn_autolast",null),autoT=null,autoMeta={t:0,c:0};
+const hasAuto=()=>!!(window.AndroidBridge&&typeof window.AndroidBridge.autoBackup==="function");
+function autoSoon(){if(!AUTO||!hasAuto())return;clearTimeout(autoT);autoT=setTimeout(autoNow,10000)}
+function autoNow(){
+  if(!hasAuto())return;clearTimeout(autoT);autoT=null;
+  autoMeta={t:TEMA.length,c:Object.keys(CAT).filter(k=>CAT[k]).length};
+  try{window.AndroidBridge.autoBackup(JSON.stringify({aplikasi:"mujam-nuzul",versi:1,tanggal:new Date().toISOString(),tema:TEMA,catatan:CAT},null,1))}catch(e){onAutoBackup(null)}
+}
+window.onAutoBackup=function(label){
+  if(label){AUTOLAST={w:Date.now(),t:autoMeta.t,c:autoMeta.c,f:String(label)}}
+  else{AUTOLAST=Object.assign({},AUTOLAST||{},{err:Date.now()})}
+  sset("mn_autolast",AUTOLAST);
+  if(st.tab==="tema"&&$("mdl").hidden)render();
+};
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&autoT)autoNow()});
+function autoStatus(){
+  if(!AUTO)return '<div class="stt off">Cadangan otomatis mati. Tema dan catatan hanya ada di HP ini sampai Anda mencadangkan secara manual.</div>';
+  const L=AUTOLAST;
+  if(L&&L.err&&(!L.w||L.err>L.w))return '<div class="stt off">Cadangan otomatis terakhir gagal disimpan. Gunakan <b>Cadangkan (unduh)</b> di bawah.</div>';
+  if(L&&L.w){const d=new Date(L.w).toLocaleString("id-ID",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    return `<div class="stt">Tersimpan ${esc(d)} · ${L.t} tema, ${L.c} catatan<br>${esc(L.f)}</div>`}
+  return '<div class="stt">Belum ada cadangan. Berkas dibuat saat tema atau catatan berubah.</div>';
 }
 function salinSemua(){
   const list=groupHits(hits());const v=V[st.v];
