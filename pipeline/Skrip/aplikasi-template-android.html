@@ -113,6 +113,24 @@ body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/20
 .fgrid .chip .ar{flex:1;text-align:center;min-width:0}
 .fgrid .chip .mut{flex:none;font-size:12px}
 .fhd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}.fhd button{font-size:13px;padding:4px 12px}
+.rngd{margin-top:10px;border-top:1px solid var(--line);padding-top:6px}
+.rngd summary{cursor:pointer;color:var(--ink);font-size:14px;padding:4px 0}.rngd summary b{color:var(--acc)}
+.sel2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}.sel2 select{width:100%;font-size:14px;text-overflow:ellipsis}
+.ctx{margin-top:10px;padding-top:6px;border-top:1px dashed var(--line)}
+.ctx .cx{padding:2px 0}.ctx .cx .ar{font-size:calc(var(--fa,26px)*.8);line-height:2;color:var(--mut)}
+.ctx .tr2{font-size:calc(var(--ft,15px)*.93);color:var(--mut);margin:0 0 4px}
+.ctxhr{font-size:12px;color:var(--acc);text-align:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:6px 0;padding:2px 0}
+.sg .hh{direction:ltr;cursor:default;font-size:13px}.sg .hh #hclr{color:var(--acc)}.sg [data-h] .ar{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;unicode-bidi:isolate}.sg [data-h] .ar{font-size:19px}.sg [data-h] small{flex:none;font-size:11px}.sg .hx{margin-left:2px;padding:6px 6px;font-size:14px;color:var(--mut)}
+#ob{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
+#ob[hidden]{display:none}
+#ob .obb{width:100%;max-width:420px;text-align:center}
+#ob .obk{font-size:44px;line-height:1.5;color:var(--acc);text-align:center}
+#ob .obt{font-size:20px;font-weight:600;margin:6px 0}
+#ob .obd{font-size:15px;line-height:1.6;color:var(--mut);margin:0 4px}
+#ob .obdots{display:flex;gap:7px;justify-content:center;margin:18px 0}
+#ob .obdots i{width:8px;height:8px;border-radius:50%;background:var(--line)}#ob .obdots i.on{background:var(--acc)}
+#ob .obs{text-align:right;margin-bottom:12px}#ob .obs button{border:0;background:none;color:var(--mut)}
+#ob .obn{display:flex;gap:10px;justify-content:center}#ob .obn button{min-width:110px}
 </style>
 </head>
 <body>
@@ -128,6 +146,7 @@ body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/20
 <main id="app"></main>
 <div id="mdl" hidden><div id="mbox" class="mbox"></div></div>
 <div id="toast"></div>
+<div id="ob" hidden></div>
 
 <script>
 const DATA=/*DATA_DISINI*/null;
@@ -208,7 +227,7 @@ const KB=["ضصثقفغعهخحجدذ","شسيبلاتنمكط","ئءؤرىةو�
 (function(){
   const kb=$("kb");
   kb.innerHTML=KB.map(r=>'<div class="kr">'+[...r].map(c=>`<button data-k="${c}">${c}</button>`).join("")+"</div>").join("")+
-   '<div class="kr"><button data-k="+">+</button><button data-k=" ">spasi</button><button data-k="⌫">⌫</button></div>';
+   '<div class="kr"><button data-k="+">+</button><button data-k="|">|</button><button data-k=" ">spasi</button><button data-k="⌫">⌫</button></div>';
   kb.addEventListener("click",e=>{
     const b=e.target.closest("button");if(!b)return;const k=b.dataset.k,q=$("q");
     if(k==="⌫")q.value=q.value.slice(0,-1);else q.value+=k;q.focus();showSg();
@@ -229,27 +248,29 @@ function resolveTerm(t,force){
   if(forms.length)return{type:"kata",label:t,post:forms,cand};
   return null;
 }
-function gabung(ts){
+function gabung(ts,op){
+  if(op==="or")return ts.flatMap(x=>x.post);
   let common=null;
   ts.forEach(x=>{const s=new Set(x.post.map(y=>y[0]));common=common?new Set([...common].filter(y=>s.has(y))):s});
   return ts.flatMap(x=>x.post.filter(y=>common.has(y[0])));
 }
-const splitQ=raw=>raw.split(/[+＋]/).map(s=>s.trim()).filter(Boolean).slice(0,3);
+function parseQ(raw){return {op:/[|｜]/.test(raw)?"or":"and",parts:raw.split(/[+＋|｜]/).map(s=>s.trim()).filter(Boolean).slice(0,3)}}
+const splitQ=raw=>parseQ(raw).parts;
 function doSearch(force){
-  const raw=$("q").value.trim();st.q=raw;st.shown=50;st.tab="hasil";st.per=null;st.fcol=false;hideSg();
+  const raw=$("q").value.trim();st.q=raw;st.shown=50;st.tab="hasil";st.per=null;st.rs=null;st.fcol=false;hideSg();
   if(!raw){st.mode=null;render();return}
-  const parts=splitQ(raw);
+  const {parts,op}=parseQ(raw);
   if(parts.length>=2){
     const ts=parts.map(p=>resolveTerm(p));
     const miss=ts.map((x,i)=>x?null:parts[i]).filter(Boolean);
     if(miss.length){st.mode="kosong";st.miss=miss;render();return}
-    st.mode="gabung";st.terms=ts;st.post=gabung(ts);st.cand=null;render();return;
+    st.mode="gabung";st.terms=ts;st.gop=op;st.post=gabung(ts,op);st.cand=null;catat();render();return;
   }
   const r=resolveTerm(parts[0],force);st.miss=null;
   if(!r){st.mode="kosong";render();return}
   st.cand=r.cand;
   if(r.type==="akar")selectRoot(r.rootId,false);else{st.mode="kata";st.rootId=null;st.forms=null}
-  render();
+  catat();render();
 }
 function selectRoot(id,rend=true){
   st.mode="akar";st.rootId=id;
@@ -258,8 +279,8 @@ function selectRoot(id,rend=true){
 }
 /* hasil dari satu kueri tersimpan pada tema */
 function queryHits(q){
-  const parts=splitQ(q.q);
-  if(parts.length>=2){const ts=parts.map(p=>resolveTerm(p));if(ts.some(x=>!x))return[];return gabung(ts)}
+  const {parts,op}=parseQ(q.q);
+  if(parts.length>=2){const ts=parts.map(p=>resolveTerm(p));if(ts.some(x=>!x))return[];return gabung(ts,op)}
   const r=resolveTerm(parts[0]||"",q.m==="kata"?"kata":undefined);if(!r)return[];
   if(r.type==="akar"&&q.f)return r.post.filter(([ai,wi])=>q.f.includes(key(A[ai][5][wi][0])));
   return r.post;
@@ -278,6 +299,7 @@ function baseHits(){
 function hits(){
   let h=baseHits();
   if(st.per&&st.per.size)h=h.filter(([ai])=>st.per.has(periodAy(st.v,A[ai][0],A[ai][1])));
+  if(st.rs)h=h.filter(([ai])=>inRange(ai));
   return h;
 }
 function groupHits(h){
@@ -290,7 +312,7 @@ function groupHits(h){
 }
 function judulHasil(){
   if(st.mode==="akar")return "akar "+DATA.roots[st.rootId];
-  if(st.mode==="gabung")return st.terms.map(t=>t.label).join(" + ");
+  if(st.mode==="gabung")return st.terms.map(t=>t.label).join(st.gop==="or"?" | ":" + ");
   if(st.mode==="tema"){const t=temaNow();return "tema "+(t?t.nama:"")}
   if(st.mode==="catatan")return "catatan saya";
   return "kata "+st.q;
@@ -324,9 +346,9 @@ function ayahCard(g){
    <div class="ay ar">${ar}</div>
    ${cat?`<div class="mut">Catatan versi: ${esc(cat)}</div>`:""}
    ${exLine(st.v,g.s,g.n)}
-   <div class="tr" ${st.tr?"":'hidden'}>${esc(a[3])}</div>
+   <div class="tr" ${st.tr&&!NOTR?"":'hidden'}>${esc(a[3])}</div>
    <div class="nt" ${note?"":"hidden"}><textarea placeholder="Catatan Anda untuk ayat ini…" rows="3">${esc(note)}</textarea></div>
-   <div class="act">${st.tr?"":'<button class="trb">Lihat terjemah</button>'}<button class="cpy">Salin</button><button class="kut">Kutip</button><button class="cmpb">Bandingkan</button><button class="ntb ${note?"on":""}">Catatan${note?" ✓":""}</button><button class="addt">+ Tema</button>${man?'<button class="rmt">Keluarkan dari tema</button>':""}</div>
+   <div class="act">${st.tr||NOTR?"":'<button class="trb">Lihat terjemah</button>'}<button class="cpy">Salin</button><button class="kut">Kutip</button><button class="ctxb">Konteks</button><button class="cmpb">Bandingkan</button><button class="ntb ${note?"on":""}">Catatan${note?" ✓":""}</button><button class="addt">+ Tema</button>${man?'<button class="rmt">Keluarkan dari tema</button>':""}</div>
   </div>`;
 }
 function statsHtml(list,h){
@@ -342,7 +364,7 @@ function statsHtml(list,h){
    <div class="mut">Jumlah kata yang cocok, bukan jumlah ayat (ayat yang ditambahkan manual atau dari catatan dihitung satu). Istilah periode mengikuti versi yang dipilih, sehingga antarversi tidak sebanding satu lawan satu. Urutan periode mengikuti urutan nuzul versi tersebut.</div></div>`;
 }
 function periodChips(){
-  const base=baseHits();const cnt=new Map();
+  const base=baseHits().filter(x=>inRange(x[0]));const cnt=new Map();
   new Set(base.map(x=>x[0])).forEach(ai=>{
     const s=A[ai][0],n=A[ai][1],lab=periodAy(st.v,s,n),o=posOf(st.v,s,n)??9999;
     if(!cnt.has(lab))cnt.set(lab,{c:0,o});const e=cnt.get(lab);e.c++;e.o=Math.min(e.o,o);
@@ -372,25 +394,25 @@ function about(){
    ${V.map(v=>DATA.meta["pengecualian_"+v.kode]?`<li><b>${esc(v.nama)}</b>: ${esc(DATA.meta["pengecualian_"+v.kode])}</li>`:"").join("")}</ul>`;
   const sumber=`<ul>
    <li>Teks al-Qur'an: <a href="http://tanzil.net">Tanzil</a> (Utsmani, tanpa perubahan).</li>
-   <li>Terjemah: Kementerian Agama RI 2010, melalui Tanzil.</li>
+   ${NOTR?"":"<li>Terjemah: Kementerian Agama RI 2010, melalui Tanzil.</li>"}
    <li>Akar dan morfologi: <a href="http://corpus.quran.com">Quranic Arabic Corpus</a> (Kais Dukes, University of Leeds).</li>
    <li>Font: Amiri Quran, Reem Kufi, Montserrat (SIL Open Font License).</li></ul>`;
   const lis=`<p><b>Mu'jam Tartib Nuzul</b>, hak cipta © 2026 Miftahul Janah. Kode: GNU General Public License v3 (hanya versi 3). Data tartib dan pengecualian ayat buatan pengembang: CC BY-SA 4.0. Kode sumber dan data: <a href="https://github.com/miftahuljinan-tech/mujam-tartib-nuzul">github.com/miftahuljinan-tech/mujam-tartib-nuzul</a>.</p>
    <p>Komponen pihak ketiga tetap di bawah ketentuannya sendiri. Blok hak cipta berikut disalin dari berkas aslinya.</p>
    <p><b>Teks al-Qur'an</b> (<a href="http://tanzil.net">tanzil.net</a>)</p><div class="lic">${esc(LIC_TZ)}</div>
    <p><b>Anotasi morfologi</b> (<a href="http://corpus.quran.com">corpus.quran.com</a>)</p><div class="lic">${esc(LIC_QA)}</div>
-   <p><b>Terjemah</b></p><div class="lic">${esc(LIC_KM)}</div>
+   ${NOTR?"":`<p><b>Terjemah</b></p><div class="lic">${esc(LIC_KM)}</div>`}
    <p><b>Font</b>: Amiri Quran, Reem Kufi, Montserrat, SIL Open Font License 1.1.</p>`;
   const kutip=`<p>Cara mengutip aplikasi ini:</p><p class="note"><b>APA</b><br>${esc(kutipApp("apa"))}</p><p class="note"><b>Chicago</b><br>${esc(kutipApp("chicago"))}</p>
    <div class="acts" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button id="kapa">Salin APA</button><button id="kchi">Salin Chicago</button><button id="kris">Unduh RIS</button><button id="kbib">Unduh BibTeX</button></div>
    <p class="mut" style="margin-top:8px">Berkas RIS dan BibTeX bisa diimpor ke Mendeley atau Zotero. DOI: ${APPDOI}.</p>`;
-  const simpan=`<p>Tema dan catatan disimpan di HP ini, tanpa dikirim ke internet. Cadangan otomatis (jika aktif) menyimpan satu berkas ke folder Unduhan setiap ada perubahan. Untuk memulihkan di HP baru, salin berkasnya lalu pilih <i>Pulihkan dari berkas</i> di tab Tema.</p>`;
+  const simpan=`<p>Tema dan catatan disimpan di HP ini, tanpa dikirim ke internet. Cadangan otomatis (jika aktif) menyimpan satu berkas ke folder Unduhan setiap ada perubahan. Untuk memulihkan di HP baru, salin berkasnya lalu pilih <i>Pulihkan dari berkas</i> di tab Tema. Riwayat pencarian (15 terakhir) juga hanya ada di HP ini; hapus lewat kotak cari.</p>`;
   const tampil=`<div class="card"><b>Tampilan</b>
    <div class="rw2"><span>Huruf Arab</span><input type="range" id="sfa" min="22" max="40" step="1" value="${SET.fa}"><b id="vfa">${SET.fa}</b></div>
    <div class="rw2"><span>Terjemah</span><input type="range" id="sft" min="13" max="20" step="1" value="${SET.ft}"><b id="vft">${SET.ft}</b></div>
    <div class="btns" style="margin-top:8px"><button data-sp="0">Normal</button><button data-sp="1">Besar</button><button data-sp="2">Sangat besar</button></div>
    <div class="mut" style="margin-top:10px">Pratinjau</div>
-   <div class="ay ar">فَٱصْبِرْ لِحُكْمِ رَبِّكَ وَلَا تَكُن كَصَاحِبِ ٱلْحُوتِ</div><div class="tr">Terjemah tampil dengan ukuran ini.</div></div>`;
+   <div class="ay ar">فَٱصْبِرْ لِحُكْمِ رَبِّكَ وَلَا تَكُن كَصَاحِبِ ٱلْحُوتِ</div><div class="tr">Terjemah tampil dengan ukuran ini.</div><div class="btns" style="margin-top:12px"><button id="obopen">Lihat panduan pembuka</button></div></div>`;
   return tampil+`<div class="card"><b>Tentang aplikasi</b>
   <p>Alat bantu penelitian tafsir maudhu'i: cari kata atau akar, lihat hasilnya menurut tartib mushaf atau tartib nuzul.</p>
   <p class="mut">Pengembang: Miftahul Janah · Versi ${APPV}</p>
@@ -416,6 +438,7 @@ function render(){
   const tabs=`<div class="tabs"><button data-t="hasil" class="${st.tab==="hasil"?"on":""}">Hasil</button><button data-t="stat" class="${st.tab==="stat"?"on":""}">Statistik</button><button data-t="tema" class="${st.tab==="tema"?"on":""}">Tema</button></div>`;
   if(st.tab==="about"){app.innerHTML='<div class="tabs"><button data-t="hasil">← Kembali</button></div>'+about();return}
   if(st.tab==="tema"){app.innerHTML=tabs+temaTab();return}
+  if(st.tab==="surah"&&st.sv){app.innerHTML=surahTab();return}
   if(st.tab==="bandingkan"){if(st.mode&&st.mode!=="kosong"){app.innerHTML=bandingkanTab();return}st.tab="hasil"}
   if(!st.mode){app.innerHTML=tabs+`<div class="card">Ketik <b>akar</b> (mis. <span class="ar">جهد</span>) atau <b>bentuk kata</b> (mis. <span class="ar">جاهدوا</span>) lalu tekan Cari. Harakat diabaikan. Untuk akar, hasilnya mencakup semua turunan; Anda bisa memilih bentuk tertentu saja.<div class="mut" style="margin-top:6px">Untuk <b>dua akar sekaligus</b>, pisahkan dengan tanda <b>+</b>, mis. <span class="ar">ظلم + عدل</span>: yang tampil hanya ayat yang memuat keduanya.</div></div>`;return}
   if(st.mode==="kosong"){app.innerHTML=tabs+`<div class="card">${st.miss?`Tidak ditemukan: ${st.miss.map(x=>"“"+esc(x)+"”").join(", ")}.`:`Tidak ada akar atau kata yang cocok dengan “${esc(st.q)}”.`} Coba tulis akar tiga huruf, atau bentuk kata tanpa awalan/akhiran. Kata yang mengandung hamzah di atas kursi bisa tertulis berbeda; untuk itu cari lewat akarnya.</div>`;return}
@@ -436,16 +459,17 @@ function render(){
      <div class="mut">${baseHits().length} kemunculan · ${nAyat} ayat</div>
      <hr class="hr"><div class="btns">${st.cand.roots.length?'<button id="toakar">Lihat sebagai akar</button>':""}<button id="plus">+ Akar kedua</button><button id="simt" class="p">Simpan ke tema</button></div></div>`;
   }else if(st.mode==="gabung"){
-    const nA=new Set(st.post.map(x=>x[0])).size;
-    top=`<div class="card orn"><div class="kt">${st.terms.map(t=>`${t.type==="akar"?"Akar":"Kata"} “<span class="ar kw" dir="rtl">${esc(t.label)}</span>”`).join(" + ")}</div>
-     <div class="mut">${nA} ayat memuat semuanya · ${st.terms.map(t=>`${esc(t.label)}: ${new Set(t.post.map(x=>x[0])).size} ayat sendiri`).join("; ")}</div>
+    const nA=new Set(st.post.map(x=>x[0])).size,nB=commonCount(st.terms),or=st.gop==="or";
+    top=`<div class="card orn"><div class="kt">${st.terms.map(t=>`${t.type==="akar"?"Akar":"Kata"} “<span class="ar kw" dir="rtl">${esc(t.label)}</span>”`).join(or?" | ":" + ")}</div>
+     <div class="seg" style="margin:8px 0"><button id="gand" class="${or?"":"on"}">Memuat semuanya (DAN)</button><button id="gor" class="${or?"on":""}">Salah satu (ATAU)</button></div>
+     <div class="mut">${or?`${nA} ayat memuat salah satunya · ${nB} di antaranya memuat semuanya`:`${nA} ayat memuat semuanya`} · ${st.terms.map(t=>`<bdi class="ar">${esc(t.label)}</bdi> saja: ${new Set(t.post.map(x=>x[0])).size} ayat`).join("; ")}</div>
      <hr class="hr"><div class="btns"><button id="plus">+ Tambah akar</button><button id="simt" class="p">Simpan ke tema</button></div>
      ${nA?"":'<div class="mut" style="margin-top:8px">Tidak ada ayat yang memuat semua istilah itu sekaligus.</div>'}</div>`;
   }else if(st.mode==="tema"){
     const t=temaNow();
     top=t?`<div class="card orn"><div class="kt">Tema “${esc(t.nama)}”</div>
      <div class="mut">${t.queries.length} pencarian · ${t.ayat.length} ayat manual</div>
-     ${t.queries.length?`<div class="chips">${t.queries.map((q,i)=>`<span class="chip" data-rq="${i}"><span class="ar">${esc(splitQ(q.q).join(" + "))}</span> <span class="mut">✕</span></span>`).join("")}</div>`:""}
+     ${t.queries.length?`<div class="chips">${t.queries.map((q,i)=>`<span class="chip" data-rq="${i}"><span class="ar">${esc(joinQ(q.q))}</span> <span class="mut">✕</span></span>`).join("")}</div>`:""}
      <hr class="hr"><div class="btns"><button id="tback">← Daftar tema</button><button id="tren2">Ganti nama</button></div></div>`:'<div class="card">Tema tidak ditemukan.</div>';
   }else if(st.mode==="catatan"){
     top=`<div class="card orn"><div class="kt">Catatan saya</div><div class="mut">${list.length} ayat bercatatan</div><hr class="hr"><div class="btns"><button id="tback">← Daftar tema</button></div></div>`;
@@ -453,8 +477,9 @@ function render(){
   const ctl=`<div class="card ctl"><div class="lb">Versi tartib</div>
     <select id="ver">${V.map((v,i)=>`<option value="${i}" ${i===st.v?"selected":""}>${esc(namaPendek(v))}</option>`).join("")}</select>
     <div class="seg"><button data-u="nuzul" class="${st.urut==="nuzul"?"on":""}">Urut nuzul</button><button data-u="mushaf" class="${st.urut==="mushaf"?"on":""}">Urut mushaf</button></div>
-    <div class="acts"><button id="trall" class="${st.tr?"on":""}">Terjemah</button><button id="cpall">Salin semua</button><button id="csv">Ekspor CSV</button></div>
-    ${list.length?`<div class="btns" style="margin-top:8px"><button id="cmpbtn">Bandingkan enam versi (${new Set(baseHits().map(x=>A[x[0]][0])).size} surah)</button></div>`:""}
+    <div class="acts">${NOTR?"":`<button id="trall" class="${st.tr?"on":""}">Terjemah</button>`}<button id="cpall">Salin semua</button><button id="csv">Ekspor CSV</button></div>
+    ${rngHtml()}
+    ${list.length?`<div class="btns" style="margin-top:8px"><button id="cmpbtn">Bandingkan enam versi (${new Set(baseHits().filter(x=>inRange(x[0])).map(x=>A[x[0]][0])).size} surah)</button></div>`:""}
     <div class="mut cnt">${list.length} ayat · ${h.length} kemunculan</div>${periodChips()}</div>`;
   let body;
   if(st.tab==="stat")body=h.length?statsHtml(list,h):"";
@@ -480,7 +505,7 @@ function simpanKueri(){
   const q=st.mode==="akar"?{q:DATA.roots[st.rootId],m:"akar",f:(st.forms.size===new Set(rootPost[st.rootId].map(([ai,wi])=>key(A[ai][5][wi][0]))).size)?null:[...st.forms]}
         :st.mode==="gabung"?{q:st.terms.map(t=>t.type==="akar"?t.label:st.q).join(" + "),m:"gabung"}
         :{q:st.q,m:"kata"};
-  if(st.mode==="gabung")q.q=splitQ(st.q).join(" + ");
+  if(st.mode==="gabung")q.q=splitQ(st.q).join(st.gop==="or"?" | ":" + ");
   pickTema("Simpan pencarian ini ke tema",t=>{
     if(!t.queries.some(x=>x.q===q.q&&x.m===q.m&&JSON.stringify(x.f||null)===JSON.stringify(q.f||null)))t.queries.push(q);
     saveTema();toast("Tersimpan di tema “"+t.nama+"”");
@@ -543,6 +568,14 @@ $("app").addEventListener("click",e=>{
   if(t.closest("#kbib")){unduh("mujam-tartib-nuzul.bib","application/x-bibtex",kutipApp("bib"));return}
   if(t.closest("#cpall")){salinSemua();return}
   if(t.closest("#csv")){eksporCsv();return}
+  if(t.closest("#gand")||t.closest("#gor")){st.gop=t.closest("#gor")?"or":"and";st.post=gabung(st.terms,st.gop);st.q=splitQ(st.q).join(st.gop==="or"?" | ":" + ");$("q").value=st.q;st.shown=50;st.per=null;render();return}
+  const rsb=t.closest("[data-rs]");if(rsb){const v=rsb.dataset.rs;st.rs=v==="all"?null:v.split("-").map(Number);st.rngOpen=true;st.shown=50;render();return}
+  const cxb=t.closest(".ctxb");if(cxb){const card=cxb.closest(".card"),ex=card.querySelector(".ctx");if(ex){ex.remove();cxb.classList.remove("on")}else{const tr=!card.querySelector(".tr").hidden;card.insertAdjacentHTML("beforeend",ctxHtml(+card.dataset.ai,2,2,tr));cxb.classList.add("on")}return}
+  const cxm=t.closest(".ctxm");if(cxm){const card=cxm.closest(".card"),pn=card.querySelector(".ctx"),b=+pn.dataset.b+2,a=+pn.dataset.a+2,tr=!card.querySelector(".tr").hidden;pn.outerHTML=ctxHtml(+card.dataset.ai,b,a,tr);return}
+  const cxs=t.closest(".ctxs");if(cxs){openSurah(+cxs.closest(".card").dataset.ai);return}
+  const cxc=t.closest(".ctxc");if(cxc){const card=cxc.closest(".card"),pn=card.querySelector(".ctx");salin(ctxText(+card.dataset.ai,+pn.dataset.b,+pn.dataset.a,!card.querySelector(".tr").hidden));return}
+  if(t.closest("#smore")){st.sshown+=50;render();return}
+  if(t.closest("#obopen")){obShow(0);return}
   if(t.closest("#ftg")){st.fcol=!st.fcol;render();return}
   const sp=t.closest("[data-sp]");if(sp){const q=PRESET[+sp.dataset.sp];SET.fa=q[0];SET.ft=q[1];sset("mn_set",SET);applySet();render();return}
   if(t.closest("#autotg")){AUTO=!AUTO;sset("mn_auto",AUTO);if(AUTO)autoNow();else{clearTimeout(autoT);autoT=null}render();return}
@@ -559,25 +592,27 @@ $("app").addEventListener("click",e=>{
   const rm=t.closest(".rmt");if(rm){const tm=temaNow(),k=akey(+rm.closest(".card").dataset.ai);if(tm){tm.ayat=tm.ayat.filter(x=>x!==k);saveTema();render()}return}
   if(t.closest("#tokata")){e.preventDefault();st.mode="kata";st.per=null;render();return}
   if(t.closest("#toakar")){e.preventDefault();selectRoot(st.cand.roots[0]);return}
-  if(t.closest("#plus")){const q=$("q");const base=splitQ(st.q).join(" + ");q.value=base+" + ";q.focus();window.scrollTo(0,0);showSg();return}
+  if(t.closest("#plus")){const q=$("q");const sep=st.mode==="gabung"&&st.gop==="or"?" | ":" + ";q.value=splitQ(st.q).join(sep)+sep;q.focus();window.scrollTo(0,0);showSg();return}
   if(t.closest("#simt")){simpanKueri();return}
   if(t.closest("#more")){st.shown+=50;render();return}
   if(t.closest("#trall")){st.tr=!st.tr;render();return}
   const tb=t.closest(".trb");if(tb){const card=tb.closest(".card");card.querySelector(".tr").hidden=false;tb.remove();return}
   if(t.closest("#tbaru")){askName("Tema baru","",nm=>{if(nm.trim()){newTema(nm);saveTema();render()}});return}
-  if(t.closest("#lcat")){st.mode="catatan";st.tab="hasil";st.per=null;st.shown=50;render();return}
+  if(t.closest("#lcat")){st.mode="catatan";st.tab="hasil";st.per=null;st.rs=null;st.shown=50;render();return}
   if(t.closest("#tback")){st.tab="tema";render();return}
   if(t.closest("#tren2")){const tm=temaNow();if(tm)askName("Ganti nama tema",tm.nama,nm=>{if(nm.trim()){tm.nama=nm.trim();saveTema();render()}});return}
   const tc=t.closest("[data-tid]");
   if(tc){const tm=TEMA.find(x=>x.id===tc.dataset.tid);if(!tm)return;
-    if(t.closest(".topen")){st.mode="tema";st.temaId=tm.id;st.tab="hasil";st.per=null;st.shown=50;render();window.scrollTo(0,0)}
+    if(t.closest(".topen")){st.mode="tema";st.temaId=tm.id;st.tab="hasil";st.per=null;st.rs=null;st.shown=50;render();window.scrollTo(0,0)}
     else if(t.closest(".tren"))askName("Ganti nama tema",tm.nama,nm=>{if(nm.trim()){tm.nama=nm.trim();saveTema();render()}});
     else if(t.closest(".tdel"))askConfirm("Hapus tema “"+tm.nama+"”? Pencarian dan ayat di dalamnya ikut terhapus (catatan ayat tidak).",()=>{TEMA=TEMA.filter(x=>x!==tm);saveTema();if(st.temaId===tm.id)st.mode=null;render()});
     return}
   if(t.closest("#bak")){cadangkan();return}
   if(t.closest("#res")){$("resf").click();return}
 });
+$("app").addEventListener("toggle",e=>{if(e.target.classList&&e.target.classList.contains("rngd"))st.rngOpen=e.target.open},true);
 $("app").addEventListener("change",e=>{
+  if(e.target.id==="rf"||e.target.id==="rt"){let a=+$("rf").value,b=+$("rt").value;if(a>b){if(e.target.id==="rf")b=a;else a=b}st.rs=(a===1&&b===114)?null:[a,b];st.rngOpen=true;st.shown=50;render();return}
   if(e.target.id==="ver"){st.v=+e.target.value;st.per=null;try{localStorage.setItem("mn_v2",st.v)}catch(x){}render()}
   if(e.target.id==="resf"&&e.target.files[0]){pulihkan(e.target.files[0]);e.target.value=""}
 });
@@ -623,7 +658,7 @@ function kutip(ai,denganTr){
   const a=A[ai];let s=a[2]+"\n— QS. "+S[a[0]-1][1]+" ("+a[0]+"):"+a[1];
   if(denganTr)s+="\n"+a[3];return s;
 }
-const APPV="0.5.2";
+const APPV="0.6.0";
 const APPDOI="10.5281/zenodo.24106183";
 const LIC_TZ="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nTanzil Quran Text (Uthmani, Version 1.1)\nCopyright (C) 2007-2026 Tanzil Project\nLicense: Creative Commons Attribution 3.0\n\nThis copy of the Quran text is carefully produced, highly\nverified and continuously monitored by a group of specialists\nat Tanzil Project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this text, but CHANGING IT IS NOT ALLOWED.\n\n- This Quran text can be used in any website or application,\n  provided that its source (Tanzil Project) is clearly indicated,\n  and a link is made to tanzil.net to enable users to keep\n  track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all files\n  derived from or containing substantial portion of this text.\n\nPlease check updates at: http://tanzil.net/updates/";
 const LIC_QA="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nQuranic Arabic Corpus (morphology, version 0.4)\nCopyright (C) 2011 Kais Dukes\nLicense: GNU General Public License\n\nThe Quranic Arabic Corpus includes syntactic and morphological\nannotation of the Quran, and builds on the verified Arabic text\ndistributed by the Tanzil project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this file, but CHANGING IT IS NOT ALLOWED.\n\n- This annotation can be used in any website or application,\n  provided its source (the Quranic Arabic Corpus) is clearly\n  indicated, and a link is made to http://corpus.quran.com to enable\n  users to keep track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all works\n  derived from or containing substantial portion of this file.\n\nPlease check updates at: http://corpus.quran.com/download";
@@ -662,7 +697,7 @@ const medv=v=>MEDV[v.kode]||namaPendek(v);
 const posTxt=p=>p===null?"—":(Number.isInteger(p)?String(p):Math.floor(p)+"+");
 function cmpRows(){
   const by=new Map();
-  new Set(baseHits().map(x=>x[0])).forEach(ai=>{const s=A[ai][0];if(!by.has(s))by.set(s,[]);by.get(s).push(A[ai][1])});
+  new Set(baseHits().filter(x=>inRange(x[0])).map(x=>x[0])).forEach(ai=>{const s=A[ai][0];if(!by.has(s))by.set(s,[]);by.get(s).push(A[ai][1])});
   const rows=[...by.entries()].map(([s,ns])=>{
     ns.sort((a,b)=>a-b);
     const vals=V.map((v,vi)=>{const ps=ns.map(n=>posOf(vi,s,n));return {p:ps[0],multi:ps.some(p=>p!==ps[0])}});
@@ -681,13 +716,13 @@ function cmpHeat(r){
 }
 function bandingkanTab(){
   const {rows,col}=cmpRows();
-  const nAy=new Set(baseHits().map(x=>x[0])).size;
+  const nAy=new Set(baseHits().filter(x=>inRange(x[0])).map(x=>x[0])).size;
   const head=`<tr><th data-cc="m" class="${col==="m"?"on":""}" style="text-align:left">Surah${col==="m"?" ↑":""}</th>${V.map((v,i)=>`<th data-cc="${i}" class="${col===i?"on":""}">${esc(shv(v))}${col===i?" ↑":""}</th>`).join("")}</tr>`;
   const body=rows.map(r=>{const hf=cmpHeat(r);
     return `<tr><td class="n">${esc(S[r.s-1][1])}<small>no. ${r.s} · ${r.n} ayat</small></td>`+r.vals.map(x=>`<td><span class="cl ${hf(x.p)} ${x.p===null?"na":""}">${posTxt(x.p)}${x.multi?"*":""}</span></td>`).join("")+"</tr>";}).join("");
   return `<div class="tabs"><button data-t="hasil">← Hasil</button></div>
   <div class="card"><b>Bandingkan versi tartib</b> <span class="mut">— ${esc(judulHasil())}</span>
-   <div class="mut">${rows.length} surah · ${nAy} ayat · semua hasil pencarian (filter periode tidak berlaku)</div>
+   <div class="mut">${rows.length} surah · ${nAy} ayat · semua hasil pencarian (filter periode tidak berlaku${st.rs?`; rentang surah ${st.rs[0]}–${st.rs[1]} berlaku`:""})</div>
    <table class="cmpt" style="margin-top:10px"><colgroup><col style="width:31%">${V.map(()=>"<col>").join("")}</colgroup><thead>${head}</thead><tbody>${body}</tbody></table>
    <div class="lgd"><span><i style="background:#faeeda"></i>15–39 dari nilai tengah</span><span><i style="background:#fcebeb"></i>40 atau lebih</span></div>
    <div class="mut">Angka = urutan nuzul surah menurut tiap versi. “—” = tidak ada dalam daftar versi itu. “n+” = disisipkan setelah ke-n. “*” = ayat-ayat surah ini punya posisi berbeda pada versi itu (yang tampil: ayat pertama yang cocok). Warna hanya penanda jarak dari nilai tengah keenam versi, bukan penilaian benar atau salah. Ketuk judul kolom untuk mengurutkan.</div>
@@ -757,6 +792,91 @@ function autoStatus(){
     return `<div class="stt">Tersimpan ${esc(d)} · ${L.t} tema, ${L.c} catatan<br>${esc(L.f)}</div>`}
   return '<div class="stt">Belum ada cadangan. Berkas dibuat saat tema atau catatan berubah.</div>';
 }
+/* ===== v0.6: konteks, rentang surah, ATAU, panduan, riwayat ===== */
+const NOTR=DATA.meta.tanpa_terjemah==="1";
+const inRange=ai=>!st.rs||(A[ai][0]>=st.rs[0]&&A[ai][0]<=st.rs[1]);
+const joinQ=raw=>{const o=parseQ(raw);return o.parts.join(o.op==="or"?" | ":" + ")};
+function commonCount(ts){let c=null;ts.forEach(x=>{const s=new Set(x.post.map(y=>y[0]));c=c?new Set([...c].filter(y=>s.has(y))):s});return c?c.size:0}
+function rngHtml(){
+  const base=baseHits(),all=new Set(base.map(x=>x[0])).size,inn=new Set(base.filter(x=>inRange(x[0])).map(x=>x[0])).size;
+  const r=st.rs,opt=sel=>S.map((s,i)=>`<option value="${i+1}" ${i+1===sel?"selected":""}>${i+1}. ${esc(s[1])}</option>`).join("");
+  const lab=r?`surah ${r[0]}–${r[1]}`:"semua surah";
+  return `<details class="rngd" ${st.rngOpen?"open":""}><summary>Batasi surah: <b>${lab}</b></summary>
+   <div class="sel2"><select id="rf" aria-label="Dari surah">${opt(r?r[0]:1)}</select><select id="rt" aria-label="Sampai surah">${opt(r?r[1]:114)}</select></div>
+   <div class="chips"><span class="chip ${r?"":"on"}" data-rs="all">Semua surah</span><span class="chip ${r&&r[0]===78&&r[1]===114?"on":""}" data-rs="78-114">Juz ʿAmma (78–114)</span></div>
+   ${r?`<div class="mut">${inn} dari ${all} ayat berada di surah ${r[0]}–${r[1]}</div>`:""}</details>`;
+}
+function ctxHtml(ai,b,a,tr){
+  const s=A[ai][0],n=A[ai][1];
+  const row=k=>{const j=ayahAt.get(s+":"+k);if(j===undefined)return"";const x=A[j];return `<div class="cx"><div class="ar">${esc(x[2])} <span class="mut">${k}</span></div>${tr&&!NOTR?`<div class="tr2">${esc(x[3])}</div>`:""}</div>`};
+  let bef="",aft="";
+  for(let k=Math.max(1,n-b);k<n;k++)bef+=row(k);
+  for(let k=n+1;k<=n+a;k++)aft+=row(k);
+  const more=ayahAt.has(s+":"+(n-b-1))||ayahAt.has(s+":"+(n+a+1));
+  return `<div class="ctx" data-b="${b}" data-a="${a}">${bef?`<div class="mut">Ayat sebelumnya</div>${bef}`:'<div class="mut">Ini ayat pertama surah.</div>'}
+   <div class="ctxhr">ayat ${n}</div>${aft?`<div class="mut">Ayat sesudahnya</div>${aft}`:'<div class="mut">Ini ayat terakhir surah.</div>'}
+   <div class="act">${more?'<button class="ctxm">Lihat 2 ayat lagi</button>':""}<button class="ctxs">Buka surah ini</button><button class="ctxc">Salin dengan konteks</button></div></div>`;
+}
+function ctxText(ai,b,a,tr){
+  const s=A[ai][0],n=A[ai][1];let from=Math.max(1,n-b),to=n;
+  while(to<n+a&&ayahAt.has(s+":"+(to+1)))to++;
+  let t="QS. "+S[s-1][1]+" ("+s+"):"+from+(to>from?"–"+to:"")+"\n";
+  for(let k=from;k<=to;k++){const j=ayahAt.get(s+":"+k);if(j===undefined)continue;t+="\n["+k+"] "+A[j][2]+(tr&&!NOTR?"\n"+A[j][3]:"")}
+  t+="\n\nTeks: Tanzil (tanzil.net).\nDitelusuri melalui: "+kutipApp("apa");
+  return t;
+}
+function surahTab(){
+  const s=st.sv.s,idx=[];
+  for(let k=1;;k++){const j=ayahAt.get(s+":"+k);if(j===undefined)break;idx.push(j)}
+  const hit=new Map();
+  baseHits().forEach(([ai,wi])=>{if(A[ai][0]===s){if(!hit.has(ai))hit.set(ai,new Set());hit.get(ai).add(wi)}});
+  const list=idx.slice(0,st.sshown).map(ai=>({ai,ws:hit.get(ai)||new Set(),s,n:A[ai][1]}));
+  const p=posOf(st.v,s,1);
+  return `<div class="tabs"><button data-t="hasil">← Hasil</button></div>
+   <div class="card orn"><div class="kt">Surah <b>${esc(S[s-1][1])}</b> (${s})</div>
+   <div class="mut">${idx.length} ayat · ${esc(namaPendek(V[st.v]))}: ${esc(periodOf(st.v,s))}${p===null?"":", Nuzul ke-"+(Number.isInteger(p)?p:Math.floor(p)+"+")} · Mushaf ke-${s}</div>
+   <div class="mut" style="margin-top:4px">Ayat yang memuat hasil pencarian Anda ditandai sorotan.</div></div>`+
+   list.map(ayahCard).join("")+(idx.length>st.sshown?`<button id="smore" class="p" style="width:100%">Tampilkan lagi (${idx.length-st.sshown})</button>`:"");
+}
+function openSurah(ai){
+  st.tab="surah";st.sv={s:A[ai][0],n:A[ai][1]};st.sshown=Math.max(50,A[ai][1]+15);render();
+  setTimeout(()=>{const c=document.querySelector('.card[data-ai="'+ai+'"]');if(c)c.scrollIntoView({block:"start"})},60);
+}
+/* riwayat pencarian */
+let HIST=sget("mn_hist",[]);if(!Array.isArray(HIST))HIST=[];
+function catat(){
+  if(!st.mode||st.mode==="kosong"||!st.q)return;
+  const n=new Set(baseHits().map(x=>x[0])).size;
+  const e={q:st.q,t:st.mode==="akar"?"akar":st.mode==="gabung"?"gabungan":"kata",c:n};
+  HIST=HIST.filter(x=>x.q!==e.q);HIST.unshift(e);HIST=HIST.slice(0,15);sset("mn_hist",HIST);
+}
+function showHist(){
+  const g=$("sg");
+  if(!HIST.length){hideSg();return}
+  sgItems=[];
+  g.innerHTML=`<div class="hh"><span class="mut">Pencarian terakhir</span><span class="mut" id="hclr" style="cursor:pointer">Hapus semua</span></div>`+
+   HIST.map((h,i)=>`<div data-h="${i}"><span class="ar">${esc(h.q)}</span><small>${h.c} ayat<span class="hx" data-hx="${i}" aria-label="Hapus">✕</span></small></div>`).join("");
+  g.hidden=false;
+}
+/* panduan pembuka */
+const OB=[["جهد","Cari akar atau kata","Ketik akar tiga huruf atau bentuk kata. Harakat diabaikan. Pisahkan dua akar dengan + (ayat yang memuat keduanya) atau | (salah satu)."],
+ ["⚑","Pilih versi, baca hasil","Pilih versi tartib, lalu urutkan menurut nuzul atau mushaf. Tanda ⚑ menandai ayat yang periodenya menyimpang dari surahnya. Ketuk Konteks untuk melihat ayat di sekitarnya."],
+ ["≋","Bandingkan dan simpan","Bandingkan enam versi sekaligus, kutip ayat untuk catatan kaki, dan simpan temuan Anda dalam tema. Cadangan otomatis menjaga tema dan catatan Anda."]];
+function obShow(i){
+  const o=$("ob"),x=OB[i];
+  o.innerHTML=`<div class="obb"><div class="obs"><button id="obskip">${i<OB.length-1?"Lewati":""}</button></div>
+   <div class="obk ar" style="text-align:center">${x[0]}</div><div class="obt">${x[1]}</div><div class="obd">${x[2]}</div>
+   <div class="obdots">${OB.map((_,k)=>`<i class="${k===i?"on":""}"></i>`).join("")}</div>
+   <div class="obn">${i?'<button id="obprev">Kembali</button>':""}<button id="obnext" class="p">${i<OB.length-1?"Lanjut":"Mulai"}</button></div></div>`;
+  o.dataset.i=i;o.hidden=false;
+}
+function obClose(){$("ob").hidden=true;$("ob").innerHTML="";sset("mn_ob",true)}
+$("ob").addEventListener("click",e=>{
+  const i=+$("ob").dataset.i;
+  if(e.target.closest("#obskip"))obClose();
+  else if(e.target.closest("#obprev"))obShow(Math.max(0,i-1));
+  else if(e.target.closest("#obnext")){if(i<OB.length-1)obShow(i+1);else obClose()}
+});
 function salinSemua(){
   const list=groupHits(hits());const v=V[st.v];
   let s="Hasil pencarian "+judulHasil()+" — "+v.nama+", urut "+(st.urut==="nuzul"?"nuzul":"mushaf")+" ("+list.length+" ayat)\n\n";
@@ -773,8 +893,9 @@ function surfaceFor(k){
   const e=Object.entries(c).sort((a,b)=>b[1]-a[1]);return e.length?e[0][0]:k;
 }
 let sgItems=[];
-function lastTerm(v){const i=Math.max(v.lastIndexOf("+"),v.lastIndexOf("＋"));return i<0?{pre:"",t:v}:{pre:v.slice(0,i+1)+" ",t:v.slice(i+1)}}
+function lastTerm(v){const i=Math.max(v.lastIndexOf("+"),v.lastIndexOf("＋"),v.lastIndexOf("|"),v.lastIndexOf("｜"));return i<0?{pre:"",t:v}:{pre:v.slice(0,i+1)+" ",t:v.slice(i+1)}}
 function showSg(){
+  if(!$("q").value.trim()){showHist();return}
   const lt=lastTerm($("q").value);const k=key(lt.t.replace(/\s+/g,""));
   if(k.length<2){hideSg();return}
   const rs=[];rootKey.forEach((rk,i)=>{if(rk.startsWith(k))rs.push([i,rootPost[i].length])});
@@ -790,9 +911,13 @@ function showSg(){
   g.hidden=false;
 }
 $("q").addEventListener("input",showSg);
+$("q").addEventListener("focus",()=>{if(!$("q").value.trim())showHist()});
 $("q").addEventListener("blur",()=>setTimeout(hideSg,150));
 $("sg").addEventListener("pointerdown",e=>e.preventDefault());
 $("sg").addEventListener("click",e=>{
+  const hx=e.target.closest("[data-hx]");if(hx){HIST.splice(+hx.dataset.hx,1);sset("mn_hist",HIST);showHist();return}
+  if(e.target.closest("#hclr")){HIST=[];sset("mn_hist",HIST);hideSg();return}
+  const hh=e.target.closest("[data-h]");if(hh){const h=HIST[+hh.dataset.h];if(h){$("q").value=h.q;doSearch()}return}
   const d=e.target.closest("[data-i]");if(!d)return;const o=sgItems[+d.dataset.i];
   const lt=lastTerm($("q").value);
   $("q").value=lt.pre+o.val;doSearch(!lt.pre&&o.t==="kata"?"kata":undefined);
@@ -811,6 +936,7 @@ $("app").addEventListener("pointerup",()=>setTimeout(()=>{lpFired=false},120));
 $("app").addEventListener("contextmenu",e=>{if(e.target.closest(".chip"))e.preventDefault()});
 $("info").onclick=()=>{st.tab=st.tab==="about"?"hasil":"about";render();window.scrollTo(0,0)};
 render();
+if(!sget("mn_ob",false))obShow(0);
 </script>
 </body>
 </html>

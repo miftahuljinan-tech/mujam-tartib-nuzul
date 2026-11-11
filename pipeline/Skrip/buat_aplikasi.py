@@ -7,6 +7,9 @@ BASE = Path(__file__).resolve().parent.parent
 DB = Path(sys.argv[1]) if len(sys.argv) > 1 else BASE / "Hasil" / "mujam.db"
 TPL = Path(sys.argv[2]) if len(sys.argv) > 2 else Path(__file__).resolve().parent / "aplikasi-template.html"
 OUT = Path(sys.argv[3]) if len(sys.argv) > 3 else BASE / "Hasil" / "mujam-nuzul.html"
+# Opsi: tambahkan --tanpa-terjemah sebagai argumen ke-4 untuk membangun versi tanpa terjemah
+# (teks terjemah dikosongkan dan semua tampilan terjemah disembunyikan).
+TANPA_TR = "--tanpa-terjemah" in sys.argv[4:]
 
 db = sqlite3.connect(DB)
 D = {}
@@ -45,8 +48,10 @@ for aid, wid, teks, rid in db.execute("select ayah_id,posisi,teks,root_id from w
     words.setdefault(aid, []).append([teks, (rid or 0) - 1])  # -1 = tanpa akar
 mismatch = {r[0] for r in db.execute("select distinct ayah_id from word where sumber_teks='korpus'")}
 for aid, s, n, teks, tr in db.execute("select id,surah_id,nomor,teks,terjemah from ayah order by id"):
-    ayah.append([s, n, teks, tr, 1 if aid in mismatch else 0, words[aid]])
+    ayah.append([s, n, teks, "" if TANPA_TR else tr, 1 if aid in mismatch else 0, words[aid]])
 D["ayah"] = ayah
+if TANPA_TR:
+    D["meta"]["tanpa_terjemah"] = "1"
 
 js = json.dumps(D, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 html = TPL.read_text(encoding="utf-8").replace("/*DATA_DISINI*/null", js)
