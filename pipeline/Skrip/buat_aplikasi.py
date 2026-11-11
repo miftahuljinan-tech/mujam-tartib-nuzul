@@ -43,7 +43,8 @@ for vid, kode, nama, rujukan in db.execute("select id,kode,nama,rujukan from tar
 D["versi"] = versi
 
 # Nama diri yang di QAC tanpa akar tetapi di Mu'jam Mufahras dicantumkan di bawah akar tertentu.
-# Setiap pasangan sudah dicocokkan dengan halaman Mu'jam (cetakan pindai, lihat catatan di bawah).
+# Setiap pasangan sudah dicocokkan dengan halaman Mu'jam (cetakan pindai). Kriteria: nama berada di blok akar
+# yang sama (tanpa ornamen pemisah antarakar). فرعون، هامان، جبريل، يهود، يحيى ternyata blok sendiri, jadi tidak dialihkan.
 # kunci: lema tanpa harakat (hamza disatukan) -> akar menurut Mu'jam Mufahras
 ALIH_MUJAM = {
     "مسيح": ("مسح", "hlm. 666", "المسيح"),     # المسيح (11)
@@ -53,6 +54,8 @@ ALIH_MUJAM = {
     "سليمن": ("سلم", "hlm. 357-358", "سليمان"),  # سليمان (17)
     "عمرن": ("عمر", "hlm. 483", "عمران"),
     "اسحاق": ("سحق", "hlm. 347", "إسحاق"),  # إسحاق (17); sesuai kritik al-Hujaili, Shamela 8558 hlm. 32     # عمران (3)
+    "تبع": ("تبع", "hlm. 152", "تُبَّع"),     # تبّع (2)
+    "مدين": ("مدن", "hlm. 663", "مدين"),     # مدين (10)
 }
 _HRK = re.compile("[\u064B-\u065F\u0670\u0640]")
 def _kunci(l):
