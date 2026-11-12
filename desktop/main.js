@@ -12,11 +12,13 @@ async function ujiAsap(win) {
   const out = process.env.MUJAM_SMOKE_OUT || path.join(os.tmpdir(), "mujam-smoke.json");
   let r;
   try {
+    win.show(); win.focus(); win.webContents.focus();
     r = await win.webContents.executeJavaScript(`(async()=>{const r={};r.judul=document.title;r.ofc=typeof OFC!=="undefined";r.plat=APPPLAT;
       $("q").value="حوت";doSearch(true);r.kartu=document.querySelectorAll(".card[data-ai]").length;
+      try{await navigator.clipboard.write([new ClipboardItem({"text/html":new Blob(["<p>uji</p>"],{type:"text/html"}),"text/plain":new Blob(["uji"],{type:"text/plain"})})]);r.klipApi="ok"}catch(e){r.klipApi=String(e)}
       r.klip=await salinRich("<p>uji</p>","uji");
       r.unduhBin=BIN_OK;eksporWord();
-      return r})()`);
+      return r})()`, true);
     for (let i = 0; i < 60 && smokeDl.length < 1; i++) await new Promise(s => setTimeout(s, 250));
     r.unduhan = smokeDl;
     r.ok = !!(r.ofc && r.kartu > 0 && smokeDl.length === 1 && smokeDl[0].state === "completed" && smokeDl[0].pk === "PK" && smokeDl[0].ukuran > 4000);
