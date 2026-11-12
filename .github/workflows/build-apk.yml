@@ -44,3 +44,30 @@ jobs:
           name: mujam-tartib-nuzul-debug-apk
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+      - name: Build AAB rilis bertanda tangan (kunci unggah Google Play)
+        id: aab
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "Secret kunci tidak tersedia; AAB rilis dilewati."
+            echo "built=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/upload-key.p12"
+          export KEYSTORE_FILE="$RUNNER_TEMP/upload-key.p12"
+          # Periksa kunci (hanya menampilkan alias dan sidik jari, bukan rahasia)
+          keytool -list -keystore "$KEYSTORE_FILE" -storepass:env KEYSTORE_PASSWORD -alias "$KEY_ALIAS"
+          gradle bundleRelease --no-daemon
+          rm -f "$KEYSTORE_FILE"
+          echo "built=true" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        if: steps.aab.outputs.built == 'true'
+        with:
+          name: mujam-tartib-nuzul-release-aab
+          path: app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error

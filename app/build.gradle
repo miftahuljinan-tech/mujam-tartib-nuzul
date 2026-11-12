@@ -14,9 +14,27 @@ android {
         versionName "0.6.10"
     }
 
+    // Penandatanganan rilis (kunci unggah Google Play). Nilainya dibaca dari
+    // variabel lingkungan yang diisi oleh GitHub Actions dari GitHub Secrets,
+    // sehingga tidak ada kunci atau kata sandi di dalam repositori.
+    def ksFile = System.getenv("KEYSTORE_FILE")
+    if (ksFile) {
+        signingConfigs {
+            release {
+                storeFile file(ksFile)
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
+            if (ksFile) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 

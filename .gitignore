@@ -9,3 +9,4 @@ keystore.properties
 *.pdf
 pipeline/Hasil/*
 !pipeline/Hasil/.gitkeep
+*.p12
