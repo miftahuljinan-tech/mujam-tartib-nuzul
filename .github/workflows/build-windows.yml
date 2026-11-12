@@ -1,0 +1,65 @@
+name: Build Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'desktop/**'
+      - 'pipeline/Skrip/aplikasi-template-android.html'
+      - 'pipeline/Skrip/ekspor-office.js'
+      - 'app/src/main/assets/mujam-nuzul.html'
+      - '.github/workflows/build-windows.yml'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unduh font (SIL OFL)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          d=desktop/app/fonts
+          mkdir -p "$d"
+          fetch() {
+            dir="$1"; out="$2"; pat="$3"
+            list=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/google/fonts/contents/ofl/$dir")
+            url=$(echo "$list" | jq -r --arg p "$pat" '.[] | select(.name|test($p)) | .download_url' | head -1)
+            test -n "$url" || { echo "Font tidak ditemukan: $dir $pat"; echo "$list" | jq -r '.[].name'; exit 1; }
+            curl -fsSL "$url" -o "$d/$out"
+            lic=$(echo "$list" | jq -r '.[] | select(.name=="OFL.txt") | .download_url')
+            curl -fsSL "$lic" -o "$d/OFL-$dir.txt"
+            ls -l "$d/$out"
+          }
+          fetch amiriquran AmiriQuran-Regular.ttf '^AmiriQuran-Regular\.ttf$'
+          fetch reemkufi ReemKufi.ttf '\.ttf$'
+          fetch montserrat Montserrat.ttf '^Montserrat\[wght\]\.ttf$'
+          cp "$d/AmiriQuran-Regular.ttf" desktop/build/AmiriQuran-Regular.ttf
+      - name: Bangun HTML aplikasi (data + templat terbaru)
+        run: python desktop/bangun_html.py
+      - name: Pasang dependensi
+        working-directory: desktop
+        run: npm install --no-audit --no-fund
+      - name: Bangun pemasang dan versi portabel
+        working-directory: desktop
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npx electron-builder --win --x64 --publish never
+      - name: Daftar hasil
+        run: ls -l desktop/dist/*.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mujam-tartib-nuzul-windows
+          path: desktop/dist/*.exe
+          if-no-files-found: error

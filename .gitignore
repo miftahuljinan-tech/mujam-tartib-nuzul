@@ -10,3 +10,8 @@ keystore.properties
 pipeline/Hasil/*
 !pipeline/Hasil/.gitkeep
 *.p12
+desktop/node_modules/
+desktop/dist/
+desktop/app/
+desktop/build/*.ttf
+!desktop/build/

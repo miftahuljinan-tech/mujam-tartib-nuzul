@@ -98,6 +98,11 @@ if TANPA_TR:
     D["meta"]["tanpa_terjemah"] = "1"
 
 js = json.dumps(D, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
-html = TPL.read_text(encoding="utf-8").replace("/*DATA_DISINI*/null", js)
+html = TPL.read_text(encoding="utf-8")
+# modul ekspor Word/Excel (ekspor-office.js) disisipkan ke templat yang memuat penandanya
+_EXP = Path(__file__).resolve().parent / "ekspor-office.js"
+if "/*EKSPOR_OFFICE*/" in html:
+    html = html.replace("/*EKSPOR_OFFICE*/", _EXP.read_text(encoding="utf-8").replace('if(typeof module!=="undefined")module.exports=OFC;', ""))
+html = html.replace("/*DATA_DISINI*/null", js)
 OUT.write_text(html, encoding="utf-8")
 print(f"Selesai: {OUT.name}  ({OUT.stat().st_size/1e6:.1f} MB)")

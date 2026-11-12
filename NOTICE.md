@@ -6,7 +6,7 @@ Hak cipta (C) 2026 Miftahul Janah.
 
 | Bagian | Lisensi |
 |---|---|
-| Kode aplikasi dan skrip (`app/`, `pipeline/Skrip/`, `.github/`) | GNU General Public License v3.0 saja (GPL-3.0-only; berkas `LICENSE`) |
+| Kode aplikasi dan skrip (`app/`, `desktop/`, `pipeline/Skrip/`, `.github/`) | GNU General Public License v3.0 saja (GPL-3.0-only; berkas `LICENSE`) |
 | Data buatan pengembang: `pipeline/Data-Mentah/tartib_*`, `pipeline/Data-Mentah/pengecualian_ayat.json`, `docs/pengecualian-ayat.xlsx` | Creative Commons Atribusi-BerbagiSerupa 4.0 Internasional (berkas `LICENSE-DATA.md`) |
 
 Kedua lisensi mewajibkan Anda menyebut nama penyusun dan tetap membuka turunannya dengan lisensi yang sama.
@@ -110,3 +110,7 @@ Data tartib dan pengecualian ayat disusun dari karya berikut. Teks karya-karya i
 - al-Syahrastani, sebagaimana dikutip az-Zanjani.
 
 Rujukan rinci per baris ada pada kolom `rujukan` dan `sumber` di berkas data serta pada `docs/pengecualian-ayat.xlsx`.
+
+### 6. Versi Windows — Electron dan electron-builder
+
+Pemasang dan versi portabel Windows dibangun dengan Electron (lisensi MIT; memuat Chromium dan komponen lain di bawah lisensinya masing-masing) dan electron-builder (MIT). Berkas lisensi komponen-komponen itu (`LICENSE.electron.txt` dan `LICENSES.chromium.html`) ikut tersimpan di dalam paket. Dependensi tidak disimpan di repositori ini; `npm install` mengunduhnya saat pembangunan.

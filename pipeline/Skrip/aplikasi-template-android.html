@@ -40,7 +40,7 @@ mark{background:var(--mark);color:inherit;border-radius:4px;padding:0 2px}
 .kb.show{display:block}
 .kb .kr{display:flex;gap:3px;justify-content:center;margin-bottom:4px;flex-wrap:nowrap}
 .kb button{font-size:21px;flex:1 1 0;min-width:0;padding:6px 0;font-family:"Amiri","Noto Naskh Arabic",serif}.kb button[data-k=" "]{flex:4 1 0;font-size:15px;font-family:inherit}.kb button[data-k="⌫"]{flex:2 1 0}
-#ver{width:100%;font-size:15px;text-overflow:ellipsis}.ctl .lb{font-size:13px;color:var(--mut);margin:0 0 4px}.ctl .seg,.ctl .acts{margin-top:10px}.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}.seg button{border:0;border-radius:0;padding:9px 6px;background:transparent;font-size:15px}.seg button+button{border-left:1px solid var(--line)}.seg button.on{background:var(--acc2);color:var(--acc);font-weight:600}.acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.acts button{padding:9px 4px;font-size:14px;white-space:nowrap;min-width:0}.ctl .cnt{margin-top:12px}
+#ver{width:100%;font-size:15px;text-overflow:ellipsis}.ctl .lb{font-size:13px;color:var(--mut);margin:0 0 4px}.ctl .seg,.ctl .acts{margin-top:10px}.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}.seg button{border:0;border-radius:0;padding:9px 6px;background:transparent;font-size:15px}.seg button+button{border-left:1px solid var(--line)}.seg button.on{background:var(--acc2);color:var(--acc);font-weight:600}.acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}.acts button{padding:9px 4px;font-size:14px;white-space:nowrap;min-width:0}.ctl .cnt{margin-top:12px}
 .chip{direction:ltr}
 .note{background:var(--acc2);border-radius:10px;padding:8px 12px;font-size:14px}
 a{color:var(--acc)}
@@ -149,6 +149,7 @@ body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/20
 <div id="ob" hidden></div>
 
 <script>
+/*EKSPOR_OFFICE*/
 const DATA=/*DATA_DISINI*/null;
 
 /* ===== normalisasi (harus sama dengan skrip Python) ===== */
@@ -348,7 +349,7 @@ function ayahCard(g){
    ${exLine(st.v,g.s,g.n)}
    <div class="tr" ${st.tr&&!NOTR?"":'hidden'}>${esc(a[3])}</div>
    <div class="nt" ${note?"":"hidden"}><textarea placeholder="Catatan Anda untuk ayat ini…" rows="3">${esc(note)}</textarea></div>
-   <div class="act">${st.tr||NOTR?"":'<button class="trb">Lihat terjemah</button>'}<button class="cpy">Salin</button><button class="kut">Kutip</button><button class="ctxb">Konteks</button><button class="cmpb">Bandingkan</button><button class="ntb ${note?"on":""}">Catatan${note?" ✓":""}</button><button class="addt">+ Tema</button>${man?'<button class="rmt">Keluarkan dari tema</button>':""}</div>
+   <div class="act">${st.tr||NOTR?"":'<button class="trb">Lihat terjemah</button>'}${NOTR?'<button class="cpa">Salin ayat</button>':'<button class="cpt">Salin terjemah</button><button class="cpa">Salin ayat + terjemah</button>'}<button class="kut">Kutip</button><button class="ctxb">Konteks</button><button class="cmpb">Bandingkan</button><button class="ntb ${note?"on":""}">Catatan${note?" ✓":""}</button><button class="addt">+ Tema</button>${man?'<button class="rmt">Keluarkan dari tema</button>':""}</div>
   </div>`;
 }
 function statsHtml(list,h){
@@ -478,7 +479,7 @@ function render(){
   const ctl=`<div class="card ctl"><div class="lb">Versi tartib</div>
     <select id="ver">${V.map((v,i)=>`<option value="${i}" ${i===st.v?"selected":""}>${esc(namaPendek(v))}</option>`).join("")}</select>
     <div class="seg"><button data-u="nuzul" class="${st.urut==="nuzul"?"on":""}">Urut nuzul</button><button data-u="mushaf" class="${st.urut==="mushaf"?"on":""}">Urut mushaf</button></div>
-    <div class="acts">${NOTR?"":`<button id="trall" class="${st.tr?"on":""}">Terjemah</button>`}<button id="cpall">Salin semua</button><button id="csv">Ekspor CSV</button></div>
+    <div class="acts">${NOTR?"":`<button id="trall" class="${st.tr?"on":""}">Terjemah</button>`}<button id="cpall">Salin semua</button><button id="csv">Ekspor CSV</button>${BIN_OK&&list.length?'<button id="docx" class="p">Ekspor ke Word</button>':""}</div>
     ${rngHtml()}
     ${list.length?`<div class="btns" style="margin-top:8px"><button id="cmpbtn">Bandingkan enam versi (${new Set(baseHits().filter(x=>inRange(x[0])).map(x=>A[x[0]][0])).size} surah)</button></div>`:""}
     <div class="mut cnt">${list.length} ayat · ${h.length} kemunculan</div>${periodChips()}</div>`;
@@ -531,6 +532,106 @@ function eksporCsv(){
   unduh("hasil-mujam-"+tgl()+".csv","text/csv;charset=utf-8","﻿"+meta+"\r\n"+rows.map(r=>r.map(q).join(",")).join("\r\n"));
   toast("CSV diunduh ("+list.length+" ayat)");
 }
+/* ===== salin ke Word dan ekspor Word/Excel ===== */
+const BIN_OK=!window.AndroidBridge; /* berkas biner (.docx/.xlsx) diunduh lewat peramban/Electron; versi Android belum mendukung */
+function unduhBin(nama,mime,bytes){
+  const b=new Blob([bytes],{type:mime});const u=URL.createObjectURL(b);
+  const a=document.createElement("a");a.href=u;a.download=nama;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(u),4000);
+}
+const MIME_DOCX="application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const MIME_XLSX="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+/* rujukan gaya (QS. al-Baqarah [2]: 255) */
+const rujuk=(s,n)=>"(QS. "+S[s-1][1]+" ["+s+"]: "+n+")";
+const FONT_LAT="'Times New Roman',serif",FONT_AR="'Amiri Quran','Traditional Arabic',serif";
+async function salinRich(html,txt){
+  let ok=false;
+  try{
+    if(window.ClipboardItem&&navigator.clipboard&&navigator.clipboard.write){
+      await navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([html],{type:"text/html"}),"text/plain":new Blob([txt],{type:"text/plain"})})]);ok=true;
+    }
+  }catch(e){}
+  if(!ok){
+    try{
+      const d=document.createElement("div");d.contentEditable="true";d.style.cssText="position:fixed;left:-9999px;top:0";d.innerHTML=html;document.body.appendChild(d);
+      const r=document.createRange();r.selectNodeContents(d);const sl=getSelection();sl.removeAllRanges();sl.addRange(r);
+      ok=document.execCommand("copy");sl.removeAllRanges();d.remove();
+    }catch(e){}
+  }
+  if(!ok){await salin(txt);return false}
+  toast("Tersalin");return true;
+}
+function salinTerjemah(ai){
+  const a=A[ai];if(NOTR||!a[3]){toast("Terjemah tidak tersedia");return}
+  const t=a[3]+" "+rujuk(a[0],a[1]);
+  salinRich(`<p style="font-family:${FONT_LAT};font-size:12pt;margin:0">${esc(t)}</p>`,t);
+}
+function salinAyat(ai){
+  const a=A[ai],r=rujuk(a[0],a[1]),tr=NOTR?"":a[3];
+  const txt=a[2]+"\n\n"+(tr?tr+" ":"")+r;
+  const html=`<p dir="rtl" lang="ar" style="direction:rtl;text-align:right;font-family:${FONT_AR};font-size:20pt;line-height:1.9;margin:0 0 6pt">${esc(a[2])}</p>`+
+    `<p style="font-family:${FONT_LAT};font-size:12pt;margin:0">${esc((tr?tr+" ":"")+r)}</p>`;
+  salinRich(html,txt);
+}
+/* potongan teks Arab untuk Word: kata yang dicari dicetak tebal */
+function arSegs(g){
+  const a=A[g.ai];if(a[4])return [{t:a[2]}];
+  const out=[];
+  a[5].forEach((w,i)=>{const b=g.ws.has(i),t=(i?" ":"")+w[0];
+    if(out.length&&!!out[out.length-1].b===b)out[out.length-1].t+=t;else out.push({t,b});});
+  return out;
+}
+function eksporWord(){
+  const list=groupHits(hits());if(!list.length){toast("Tidak ada ayat untuk diekspor");return}
+  let flag=false;
+  const rows=list.map(g=>{
+    const a=A[g.ai],p=posOf(st.v,g.s,g.n),ex=exOf(st.v,g.s,g.n),f=ex&&ex[4]==="pasti";if(f)flag=true;
+    return [posTxt(p),g.s,S[g.s-1][1]+" ["+g.s+"]: "+g.n,arSegs(g),NOTR?"":a[3],periodAy(st.v,g.s,g.n)+(f?" ⚑":"")];
+  });
+  const nKata=hits().length;
+  const sub="Versi tartib: "+namaPendek(V[st.v])+" · urut "+(st.urut==="nuzul"?"nuzul":"mushaf")+" · "+list.length+" ayat · "+nKata+" kemunculan"+
+    (st.per&&st.per.size?" · periode: "+[...st.per].join(", "):"")+(st.rs?" · surah "+st.rs[0]+"–"+st.rs[1]:"");
+  const notes=[
+    "Urut turun = urutan nuzul surah menurut versi tartib yang dipilih (“n+” = disisipkan setelah ke-n). Urut mushafi = nomor surah dalam mushaf. Makki/Madani = periode menurut versi tersebut; istilah periode berbeda antarversi."+(flag?" ⚑ = periode ayat ini menyimpang dari periode surahnya.":""),
+    st.mode==="tema"||st.mode==="catatan"?"":"Kata yang dicari dicetak tebal pada teks Arab.",
+    "Teks Arab: Tanzil (tanzil.net)."+(NOTR?"":" Terjemah: Al-Qur'an dan Terjemahnya Edisi Penyempurnaan 2019, Kemenag RI/LPMQ.")+" Akar kata: Quranic Arabic Corpus (corpus.quran.com).",
+    "Ditelusuri melalui: "+kutipApp("apa")
+  ].filter(Boolean);
+  const cols=NOTR
+    ?[{h:"Urut turun",w:1000,type:"ctr"},{h:"Urut mushafi",w:1000,type:"ctr"},{h:"Surat:ayat",w:2000,type:"txt"},{h:"Ayat Arab",w:8570,type:"ar"},{h:"Makki/Madani",w:2000,type:"ctr"}]
+    :[{h:"Urut turun",w:900,type:"ctr"},{h:"Urut mushafi",w:900,type:"ctr"},{h:"Surat:ayat",w:1700,type:"txt"},{h:"Ayat Arab",w:4800,type:"ar"},{h:"Terjemah",w:4770,type:"txt"},{h:"Makki/Madani",w:1500,type:"ctr"}];
+  const rr=NOTR?rows.map(r=>[r[0],r[1],r[2],r[3],r[5]]):rows;
+  const bytes=OFC.docx({title:"Daftar ayat: "+judulHasil(),subtitle:sub,cols,rows:rr,notes,landscape:true,footer:"Mu'jam Tartib Nuzul · "+tgl()});
+  unduhBin("daftar-ayat-mujam-"+tgl()+".docx",MIME_DOCX,bytes);
+  toast("Word diunduh ("+list.length+" ayat)");
+}
+/* tabel perbandingan: salin sebagai tabel (tempel di Word/Excel) dan ekspor Excel */
+function cmpCell(x){return x.p===null?"":posTxt(x.p)+(x.multi?"*":"")}
+function salinCmpTabel(){
+  const {rows}=cmpRows();
+  const head=["Surah","Mushaf","Ayat cocok"].concat(V.map(shv));
+  const td=(t,al)=>`<td style="border:1px solid #888;padding:3pt 6pt;text-align:${al||"center"}">${esc(t)}</td>`;
+  const th=t=>`<th style="border:1px solid #888;padding:3pt 6pt;background:#e3eeea">${esc(t)}</th>`;
+  const tbl=`<table style="border-collapse:collapse;font-family:${FONT_LAT};font-size:11pt"><tr>${head.map(th).join("")}</tr>`+
+    rows.map(r=>`<tr>${td(S[r.s-1][1],"left")}${td(r.s)}${td(r.n)}${r.vals.map(x=>td(x.p===null?"—":posTxt(x.p)+(x.multi?"*":""))).join("")}</tr>`).join("")+"</table>";
+  const cap=`<p style="font-family:${FONT_LAT};font-size:11pt;margin:0 0 4pt"><b>Perbandingan urutan nuzul: ${esc(judulHasil())}</b> (${rows.length} surah)</p>`;
+  const note=`<p style="font-family:${FONT_LAT};font-size:9pt;margin:4pt 0 0">Angka = urutan nuzul surah menurut tiap versi; — = tidak ada dalam daftar; n+ = disisipkan setelah ke-n; * = posisi ayat berbeda dalam surah itu. Versi: ${esc(V.map(v=>shv(v)+" = "+v.nama).join("; "))}. Sumber teks: Tanzil (tanzil.net); akar: Quranic Arabic Corpus (corpus.quran.com). Ditelusuri melalui: ${esc(kutipApp("apa"))}</p>`;
+  salinRich(cap+tbl+note,cmpTabelText());
+}
+function eksporCmpXlsx(){
+  const {rows}=cmpRows();
+  const num=x=>x.p===null?null:(Number.isInteger(x.p)&&!x.multi?x.p:posTxt(x.p)+(x.multi?"*":""));
+  const cols=[{h:"Surah",w:22,type:"txt"},{h:"No. mushaf",w:11,type:"num"},{h:"Ayat cocok",w:11,type:"num"}].concat(V.map(v=>({h:v.nama,w:16,type:"ctr"})));
+  const data=rows.map(r=>[S[r.s-1][1],r.s,r.n].concat(r.vals.map(num)));
+  const ket=["Perbandingan urutan nuzul: "+judulHasil()+" ("+rows.length+" surah)",
+    "Angka = urutan nuzul surah menurut tiap versi tartib. Sel kosong = tidak ada dalam daftar versi itu. “n+” = disisipkan setelah ke-n. “*” = ayat-ayat surah ini punya posisi berbeda pada versi itu (yang tampil: ayat pertama yang cocok).",
+    "Versi: "+V.map(v=>shv(v)+" = "+v.nama).join("; ")+".",
+    "Sumber teks: Tanzil (tanzil.net). Akar kata: Quranic Arabic Corpus (corpus.quran.com).",
+    "Ditelusuri melalui: "+kutipApp("apa")];
+  const bytes=OFC.xlsx({sheets:[{name:"Perbandingan",cols,rows:data},{name:"Keterangan",cols:[{h:"Keterangan",w:120,type:"txt"}],rows:ket.map(x=>[x])}]});
+  unduhBin("bandingkan-mujam-"+tgl()+".xlsx",MIME_XLSX,bytes);
+  toast("Excel diunduh ("+rows.length+" surah)");
+}
 function cadangkan(){
   unduh("cadangan-mujam-nuzul-"+tgl()+".json","application/json",JSON.stringify({aplikasi:"mujam-nuzul",versi:1,tanggal:new Date().toISOString(),tema:TEMA,catatan:CAT},null,1));
   toast("Cadangan diunduh");
@@ -568,6 +669,7 @@ $("app").addEventListener("click",e=>{
   if(t.closest("#kris")){unduh("mujam-tartib-nuzul.ris","application/x-research-info-systems",kutipApp("ris"));return}
   if(t.closest("#kbib")){unduh("mujam-tartib-nuzul.bib","application/x-bibtex",kutipApp("bib"));return}
   if(t.closest("#cpall")){salinSemua();return}
+  if(t.closest("#docx")){eksporWord();return}
   if(t.closest("#csv")){eksporCsv();return}
   if(t.closest("#gand")||t.closest("#gor")){st.gop=t.closest("#gor")?"or":"and";st.post=gabung(st.terms,st.gop);st.q=splitQ(st.q).join(st.gop==="or"?" | ":" + ");$("q").value=st.q;st.shown=50;st.per=null;render();return}
   const rsb=t.closest("[data-rs]");if(rsb){const v=rsb.dataset.rs;st.rs=v==="all"?null:v.split("-").map(Number);st.rngOpen=true;st.shown=50;render();return}
@@ -582,11 +684,14 @@ $("app").addEventListener("click",e=>{
   if(t.closest("#autotg")){AUTO=!AUTO;sset("mn_auto",AUTO);if(AUTO)autoNow();else{clearTimeout(autoT);autoT=null}render();return}
   const sh=t.closest("[data-cc]");if(sh){const c=sh.dataset.cc;st.cmpSort=c==="m"?"m":+c;render();return}
   if(t.closest("#cmpbtn")){st.cmpSort=null;st.tab="bandingkan";render();window.scrollTo(0,0);return}
-  if(t.closest("#cmptsv")){salin(cmpTabelText());return}
+  if(t.closest("#cmptsv")){salinCmpTabel();return}
+  if(t.closest("#cmpxlsx")){eksporCmpXlsx();return}
   if(t.closest("#cmpcsv")){eksporCmp();return}
   const cb=t.closest(".cmpb");if(cb){const card=cb.closest(".card"),ex=card.querySelector(".cp");if(ex){ex.remove();cb.classList.remove("on")}else{card.insertAdjacentHTML("beforeend",cmpAyat(+card.dataset.ai));cb.classList.add("on")}return}
   const cq=t.closest(".cmpcp");if(cq){salin(cmpAyatText(+cq.closest(".card").dataset.ai));return}
   const kt=t.closest(".kut");if(kt){const card=kt.closest(".card");salin(sitasiLengkap(+card.dataset.ai,!card.querySelector(".tr").hidden));return}
+  const cpt=t.closest(".cpt");if(cpt){salinTerjemah(+cpt.closest(".card").dataset.ai);return}
+  const cpa=t.closest(".cpa");if(cpa){salinAyat(+cpa.closest(".card").dataset.ai);return}
   const cp=t.closest(".cpy");if(cp){const card=cp.closest(".card");salin(kutip(+card.dataset.ai,!card.querySelector(".tr").hidden));return}
   const nb=t.closest(".ntb");if(nb){const card=nb.closest(".card"),nt=card.querySelector(".nt");nt.hidden=!nt.hidden;if(!nt.hidden)nt.querySelector("textarea").focus();return}
   const at=t.closest(".addt");if(at){const ai=+at.closest(".card").dataset.ai;pickTema("Tambahkan ayat "+akey(ai)+" ke tema",tm=>{if(!tm.ayat.includes(akey(ai)))tm.ayat.push(akey(ai));saveTema();toast("Ayat ditambahkan ke “"+tm.nama+"”")});return}
@@ -660,6 +765,7 @@ function kutip(ai,denganTr){
   if(denganTr)s+="\n"+a[3];return s;
 }
 const APPV="0.6.10";
+const APPPLAT=/Android/i.test(navigator.userAgent)?"Aplikasi Android":(/Electron/i.test(navigator.userAgent)?"Aplikasi Windows":"Aplikasi");
 const APPDOI="10.5281/zenodo.24106183";
 const LIC_TZ="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nTanzil Quran Text (Uthmani, Version 1.1)\nCopyright (C) 2007-2026 Tanzil Project\nLicense: Creative Commons Attribution 3.0\n\nThis copy of the Quran text is carefully produced, highly\nverified and continuously monitored by a group of specialists\nat Tanzil Project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this text, but CHANGING IT IS NOT ALLOWED.\n\n- This Quran text can be used in any website or application,\n  provided that its source (Tanzil Project) is clearly indicated,\n  and a link is made to tanzil.net to enable users to keep\n  track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all files\n  derived from or containing substantial portion of this text.\n\nPlease check updates at: http://tanzil.net/updates/";
 const LIC_QA="PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK\n\nQuranic Arabic Corpus (morphology, version 0.4)\nCopyright (C) 2011 Kais Dukes\nLicense: GNU General Public License\n\nThe Quranic Arabic Corpus includes syntactic and morphological\nannotation of the Quran, and builds on the verified Arabic text\ndistributed by the Tanzil project.\n\nTERMS OF USE:\n\n- Permission is granted to copy and distribute verbatim copies\n  of this file, but CHANGING IT IS NOT ALLOWED.\n\n- This annotation can be used in any website or application,\n  provided its source (the Quranic Arabic Corpus) is clearly\n  indicated, and a link is made to http://corpus.quran.com to enable\n  users to keep track of changes.\n\n- This copyright notice shall be included in all verbatim copies\n  of the text, and shall be reproduced appropriately in all works\n  derived from or containing substantial portion of this file.\n\nPlease check updates at: http://corpus.quran.com/download";
@@ -670,10 +776,10 @@ function namaPendek(v){
 }
 function kutipApp(f){
   f=f||"apa";
-  if(f==="chicago")return "Janah, Miftahul. 2026. Mu'jam Tartib Nuzul. Versi "+APPV+". Aplikasi Android. https://doi.org/"+APPDOI+".";
-  if(f==="ris")return ["TY  - COMP","TI  - Mu'jam Tartib Nuzul","AU  - Janah, Miftahul","PY  - 2026","ET  - "+APPV,"M3  - Aplikasi Android","DO  - "+APPDOI,"UR  - https://doi.org/"+APPDOI,"N1  - Teks: Tanzil; terjemah: Kemenag RI 2019 (LPMQ); akar: Quranic Arabic Corpus (Dukes)","ER  - ",""].join("\r\n");
-  if(f==="bib")return "@software{janah2026mujam,\n  author  = {Janah, Miftahul},\n  title   = {Mu'jam Tartib Nuzul},\n  year    = {2026},\n  version = {"+APPV+"},\n  doi     = {"+APPDOI+"},\n  url     = {https://doi.org/"+APPDOI+"},\n  note    = {Aplikasi Android}\n}\n";
-  return "Janah, M. (2026). Mu'jam Tartib Nuzul (Versi "+APPV+") [Aplikasi Android]. https://doi.org/"+APPDOI;
+  if(f==="chicago")return "Janah, Miftahul. 2026. Mu'jam Tartib Nuzul. Versi "+APPV+". "+APPPLAT+". https://doi.org/"+APPDOI+".";
+  if(f==="ris")return ["TY  - COMP","TI  - Mu'jam Tartib Nuzul","AU  - Janah, Miftahul","PY  - 2026","ET  - "+APPV,"M3  - "+APPPLAT,"DO  - "+APPDOI,"UR  - https://doi.org/"+APPDOI,"N1  - Teks: Tanzil; terjemah: Kemenag RI 2019 (LPMQ); akar: Quranic Arabic Corpus (Dukes)","ER  - ",""].join("\r\n");
+  if(f==="bib")return "@software{janah2026mujam,\n  author  = {Janah, Miftahul},\n  title   = {Mu'jam Tartib Nuzul},\n  year    = {2026},\n  version = {"+APPV+"},\n  doi     = {"+APPDOI+"},\n  url     = {https://doi.org/"+APPDOI+"},\n  note    = {"+APPPLAT+"}\n}\n";
+  return "Janah, M. (2026). Mu'jam Tartib Nuzul (Versi "+APPV+") ["+APPPLAT+"]. https://doi.org/"+APPDOI;
 }
 function sitasiLengkap(ai,denganTr){
   const a=A[ai],s=a[0],n=a[1],v=V[st.v];
@@ -727,7 +833,7 @@ function bandingkanTab(){
    <table class="cmpt" style="margin-top:10px"><colgroup><col style="width:31%">${V.map(()=>"<col>").join("")}</colgroup><thead>${head}</thead><tbody>${body}</tbody></table>
    <div class="lgd"><span><i style="background:#faeeda"></i>15–39 dari nilai tengah</span><span><i style="background:#fcebeb"></i>40 atau lebih</span></div>
    <div class="mut">Angka = urutan nuzul surah menurut tiap versi. “—” = tidak ada dalam daftar versi itu. “n+” = disisipkan setelah ke-n. “*” = ayat-ayat surah ini punya posisi berbeda pada versi itu (yang tampil: ayat pertama yang cocok). Warna hanya penanda jarak dari nilai tengah keenam versi, bukan penilaian benar atau salah. Ketuk judul kolom untuk mengurutkan.</div>
-   <div class="btns" style="margin-top:10px"><button id="cmptsv">Salin tabel</button><button id="cmpcsv">Ekspor CSV</button></div></div>`;
+   <div class="btns" style="margin-top:10px"><button id="cmptsv">Salin tabel ke Word</button>${BIN_OK?'<button id="cmpxlsx" class="p">Ekspor ke Excel</button>':""}<button id="cmpcsv">Ekspor CSV</button></div></div>`;
 }
 function cmpTabelText(){
   const {rows}=cmpRows();

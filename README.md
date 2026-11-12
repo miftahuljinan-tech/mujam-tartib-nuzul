@@ -1,6 +1,6 @@
 # Mu'jam Tartib Nuzul
 
-Aplikasi Android offline untuk mencari akar atau kata dalam al-Qur'an dan menampilkan hasilnya menurut tartib mushaf atau tartib nuzul. Dibuat untuk membantu mahasiswa dan peneliti tafsir maudhu'i. Gratis, tanpa iklan, tanpa izin internet.
+Aplikasi offline (Android dan Windows) untuk mencari akar atau kata dalam al-Qur'an dan menampilkan hasilnya menurut tartib mushaf atau tartib nuzul. Dibuat untuk membantu mahasiswa dan peneliti tafsir maudhu'i. Gratis, tanpa iklan, tanpa izin internet.
 
 Pengembang: Miftahul Janah.
 
@@ -11,12 +11,14 @@ Pengembang: Miftahul Janah.
 - Pengecualian periode tingkat ayat (⚑) dengan sumber dan status.
 - Penyaringan periode, statistik, koleksi tematik, catatan pribadi, cadangan, dan ekspor CSV.
 - Salin dan Kutip dengan sitasi lengkap, serta kutipan aplikasi dalam format APA, Chicago, RIS, dan BibTeX.
+- Versi Windows: salin terjemah atau ayat + terjemah (rujukan `(QS. al-Baqarah [2]: 255)`), ekspor daftar ayat ke Word (.docx, urut nuzul dan mushafi, teks Arab rata kanan) dan ekspor tabel perbandingan ke Excel (.xlsx).
 
 ## Struktur
 
 | Folder | Isi |
 |---|---|
 | `app/` | Proyek Android (pembungkus WebView, tanpa izin internet) |
+| `desktop/` | Proyek Windows (pembungkus Electron, offline, pemasang dan versi portabel) |
 | `pipeline/` | Alur pembuatan data: `Data-Mentah/` (sumber), `Skrip/` (skrip dan templat), `Hasil/` (keluaran) |
 | `docs/` | Tabel pengecualian ayat |
 | `NOTICE.md` | Lisensi dan kredit semua komponen |
@@ -38,6 +40,10 @@ Untuk versi HTML satu berkas (untuk dibuka di peramban), jalankan `python buat_a
 ## Membangun APK
 
 Repositori ini memuat alur GitHub Actions (`.github/workflows/build-apk.yml`) yang mengunduh font, lalu membangun APK debug.
+
+## Membangun versi Windows
+
+Alur GitHub Actions `.github/workflows/build-windows.yml` mengunduh font, membangun `desktop/app/index.html` dari data yang sudah ada (`python desktop/bangun_html.py`), lalu membangun pemasang dan versi portabel dengan electron-builder. Hasilnya ada di artifact `mujam-tartib-nuzul-windows`.
 
 ## Lisensi
 

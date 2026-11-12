@@ -1,0 +1,47 @@
+{
+  "name": "mujam-tartib-nuzul-desktop",
+  "version": "0.7.0",
+  "description": "Mu'jam Tartib Nuzul untuk Windows (offline)",
+  "main": "main.js",
+  "author": "Miftahul Janah",
+  "license": "GPL-3.0-only",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "id.miftahuljanah.mujamnuzul.desktop",
+    "productName": "Mujam Tartib Nuzul",
+    "copyright": "Hak cipta (C) 2026 Miftahul Janah",
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["main.js", "package.json", "app/**/*", "build/icon.png"],
+    "asar": true,
+    "forceCodeSigning": false,
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "language": "1057",
+      "include": "build/installer.nsh",
+      "artifactName": "Mujam-Tartib-Nuzul-Pemasang-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "Mujam-Tartib-Nuzul-Portabel-${version}.${ext}"
+    }
+  }
+}
