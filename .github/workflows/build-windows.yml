@@ -56,6 +56,17 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: npx electron-builder --win --x64 --publish never
+      - name: Uji asap di Electron (pencarian, salin, ekspor Word)
+        env:
+          MUJAM_SMOKE: '1'
+          MUJAM_SMOKE_OUT: ${{ runner.temp }}\mujam-smoke.json
+        run: |
+          set +e
+          timeout 90 "desktop/dist/win-unpacked/Mujam Tartib Nuzul.exe"
+          code=$?
+          echo "kode keluar: $code"
+          cat "$RUNNER_TEMP/mujam-smoke.json" || echo "berkas hasil uji tidak ada"
+          test "$code" = "0"
       - name: Daftar hasil
         run: ls -l desktop/dist/*.exe
       - uses: actions/upload-artifact@v4
