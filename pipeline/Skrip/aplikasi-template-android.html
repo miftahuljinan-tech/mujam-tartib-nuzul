@@ -373,7 +373,7 @@ function periodChips(){
   const labs=[...cnt.entries()].sort((a,b)=>a[1].o-b[1].o);
   if(labs.length===1&&labs[0][0]==="tanpa klasifikasi periode")return '<div class="mut" style="margin-top:6px">Versi ini tidak mengklasifikasikan periode, jadi filter periode tidak tersedia.</div>';
   if(labs.length<2)return "";
-  return `<div class="mut" style="margin-top:8px">Periode (ketuk untuk menyaring):</div><div class="chips">${labs.map(([l,e])=>`<span class="chip ${st.per&&st.per.has(l)?"on":""}" data-p="${esc(l)}">${esc(l)} <span class="mut">${e.c}</span></span>`).join("")}</div>`;
+  return `<div class="mut" style="margin-top:8px">Periode (${TAP.toLowerCase()} untuk menyaring):</div><div class="chips">${labs.map(([l,e])=>`<span class="chip ${st.per&&st.per.has(l)?"on":""}" data-p="${esc(l)}">${esc(l)} <span class="mut">${e.c}</span></span>`).join("")}</div>`;
 }
 function about(){
   const m=DATA.meta;
@@ -408,7 +408,8 @@ function about(){
   const kutip=`<p>Cara mengutip aplikasi ini:</p><p class="note"><b>APA</b><br>${esc(kutipApp("apa"))}</p><p class="note"><b>Chicago</b><br>${esc(kutipApp("chicago"))}</p>
    <div class="acts" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button id="kapa">Salin APA</button><button id="kchi">Salin Chicago</button><button id="kris">Unduh RIS</button><button id="kbib">Unduh BibTeX</button></div>
    <p class="mut" style="margin-top:8px">Berkas RIS dan BibTeX bisa diimpor ke Mendeley atau Zotero. DOI: ${APPDOI}.</p>`;
-  const simpan=`<p>Tema dan catatan disimpan di HP ini, tanpa dikirim ke internet. Cadangan otomatis (jika aktif) menyimpan satu berkas ke folder Unduhan setiap ada perubahan. Untuk memulihkan di HP baru, salin berkasnya lalu pilih <i>Pulihkan dari berkas</i> di tab Tema. Riwayat pencarian (15 terakhir) juga hanya ada di HP ini; hapus lewat kotak cari.</p>`;
+  const simpan=IS_AND?`<p>Tema dan catatan disimpan di HP ini, tanpa dikirim ke internet. Cadangan otomatis (jika aktif) menyimpan satu berkas ke folder Unduhan setiap ada perubahan. Untuk memulihkan di HP baru, salin berkasnya lalu pilih <i>Pulihkan dari berkas</i> di tab Tema. Riwayat pencarian (15 terakhir) juga hanya ada di HP ini; hapus lewat kotak cari.</p>`
+  :`<p>Tema dan catatan disimpan di komputer ini, di dalam data aplikasi pada profil pengguna Windows Anda, tanpa dikirim ke internet. Tidak ada cadangan otomatis: pakai <i>Cadangkan (unduh)</i> di tab Tema untuk menyimpan semua tema dan catatan ke satu berkas (Anda memilih lokasinya), lalu simpan berkas itu di tempat yang aman. Untuk memulihkan di komputer lain atau setelah memasang ulang, pilih <i>Pulihkan dari berkas</i> di tab Tema. Riwayat pencarian (15 terakhir) juga hanya ada di komputer ini; hapus lewat kotak cari.</p>`;
   const tampil=`<div class="card"><b>Tampilan</b>
    <div class="rw2"><span>Huruf Arab</span><input type="range" id="sfa" min="22" max="40" step="1" value="${SET.fa}"><b id="vfa">${SET.fa}</b></div>
    <div class="rw2"><span>Terjemah</span><input type="range" id="sft" min="13" max="20" step="1" value="${SET.ft}"><b id="vft">${SET.ft}</b></div>
@@ -454,7 +455,7 @@ function render(){
      <div class="btns">${st.cand&&st.cand.forms.length?'<button id="tokata">Lihat sebagai kata</button>':""}<button id="all">Pilih semua</button><button id="none">Kosongkan semua</button></div>
      <div class="btns" style="margin-top:8px"><button id="plus">+ Akar kedua</button><button id="simt" class="p">Simpan ke tema</button></div>
      <div class="fhd"><span class="mut">${formTotal()} bentuk turunan · ${st.forms.size} dipilih</span><button id="ftg">${st.fcol?"Tampilkan":"Sembunyikan"}</button></div>
-     ${st.fcol?"":`<div class="mut" style="margin:6px 0">Ketuk untuk memilih atau membatalkan; <b>tekan-tahan</b> untuk memilih hanya satu bentuk.</div><div class="chips fgrid" id="chips">${formChips()}</div>`}</div>`;
+     ${st.fcol?"":`<div class="mut" style="margin:6px 0">${TAP} untuk memilih atau membatalkan; <b>${HOLD}</b> untuk memilih hanya satu bentuk.</div><div class="chips fgrid" id="chips">${formChips()}</div>`}</div>`;
   }else if(st.mode==="kata"){
     const nAyat=new Set(baseHits().map(x=>x[0])).size;
     top=`<div class="card orn"><div class="kt">Kata “<span class="ar kw" dir="rtl">${esc(st.q)}</span>”</div>
@@ -533,6 +534,8 @@ function eksporCsv(){
   toast("CSV diunduh ("+list.length+" ayat)");
 }
 /* ===== salin ke Word dan ekspor Word/Excel ===== */
+const IS_AND=/Android/i.test(navigator.userAgent); /* teks yang menyebut HP, ketuk, dan cadangan otomatis hanya untuk Android */
+const TAP=IS_AND?"Ketuk":"Klik",HOLD=IS_AND?"tekan-tahan":"klik-tahan";
 const BIN_OK=!window.AndroidBridge; /* berkas biner (.docx/.xlsx) diunduh lewat peramban/Electron; versi Android belum mendukung */
 function unduhBin(nama,mime,bytes){
   const b=new Blob([bytes],{type:mime});const u=URL.createObjectURL(b);
@@ -967,8 +970,8 @@ function showHist(){
 }
 /* panduan pembuka */
 const OB=[["جهد","Cari akar atau kata","Ketik akar tiga huruf atau bentuk kata. Harakat diabaikan. Pisahkan dua akar dengan + (ayat yang memuat keduanya) atau | (salah satu)."],
- ["⚑","Pilih versi, baca hasil","Pilih versi tartib, lalu urutkan menurut nuzul atau mushaf. Tanda ⚑ menandai ayat yang periodenya menyimpang dari surahnya. Ketuk Konteks untuk melihat ayat di sekitarnya."],
- ["≋","Bandingkan dan simpan","Bandingkan enam versi sekaligus, kutip ayat untuk catatan kaki, dan simpan temuan Anda dalam tema. Cadangan otomatis menjaga tema dan catatan Anda."]];
+ ["⚑","Pilih versi, baca hasil","Pilih versi tartib, lalu urutkan menurut nuzul atau mushaf. Tanda ⚑ menandai ayat yang periodenya menyimpang dari surahnya. "+TAP+" Konteks untuk melihat ayat di sekitarnya."],
+ ["≋","Bandingkan dan simpan","Bandingkan enam versi sekaligus, kutip ayat untuk catatan kaki, dan simpan temuan Anda dalam tema. "+(IS_AND?"Cadangan otomatis menjaga tema dan catatan Anda.":"Cadangkan tema dan catatan ke satu berkas kapan saja.")]];
 function obShow(i){
   const o=$("ob"),x=OB[i];
   o.innerHTML=`<div class="obb"><div class="obs"><button id="obskip">${i<OB.length-1?"Lewati":""}</button></div>
